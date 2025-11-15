@@ -1,0 +1,158 @@
+<section id="services" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800/50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="text-center mb-12 md:mb-16">
+      <div class="inline-flex items-center justify-center px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
+        <span class="text-sm font-semibold text-red-600 dark:text-red-400">ONE PLATFORM • TWO POWERFUL PANELS</span>
+      </div>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
+        Everything You Need in
+        <span class="text-red-600 dark:text-red-500"> One Place</span>
+      </h2>
+      <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+        Whether you're a trainer managing clients or a member crushing goals, 
+        we've got the perfect tools for you.
+      </p>
+    </div>
+
+    <!-- Panels Grid -->
+    <div class="grid lg:grid-cols-2 gap-8 mb-12">
+      <!-- Panel Card -->
+      <div *ngFor="let panel of panels" 
+           class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-xl overflow-hidden">
+        
+        <!-- Panel Header -->
+        <div [class]="'bg-gradient-to-r ' + panel.color + ' p-6 md:p-8'">
+          <div class="flex items-center space-x-3 mb-2">
+            <div class="p-2 bg-white/20 rounded-lg" [innerHTML]="panel.icon"></div>
+            <div>
+              <h3 class="text-2xl md:text-3xl font-bold text-white">
+                {{panel.title}}
+              </h3>
+              <p class="text-white/90 text-sm md:text-base">
+                {{panel.subtitle}}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features List -->
+        <div class="p-6 md:p-8">
+          <div class="space-y-4">
+            <div *ngFor="let feature of panel.features" 
+                 class="flex items-start space-x-3 group">
+              <!-- Feature Icon -->
+              <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-colors">
+                <div [innerHTML]="feature.icon" class="text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"></div>
+              </div>
+              <!-- Feature Content -->
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm md:text-base">
+                  {{feature.title}}
+                </h4>
+                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                  {{feature.description}}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Badge -->
+        <div class="absolute top-6 right-6">
+          <div *ngIf="panel.type === 'admin'" 
+               class="px-3 py-1 bg-white/20 backdrop-blur rounded-full">
+            <span class="text-xs font-bold text-white uppercase tracking-wide">For Trainers</span>
+          </div>
+          <div *ngIf="panel.type === 'member'" 
+               class="px-3 py-1 bg-white/20 backdrop-blur rounded-full">
+            <span class="text-xs font-bold text-white uppercase tracking-wide">For Members</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-lg">
+      <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+        How It Works
+      </h3>
+      
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+        <!-- Step 1 -->
+        <div class="text-center">
+          <div class="w-12 h-12 md:w-14 md:h-14 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl md:text-2xl font-bold text-red-600 dark:text-red-400">1</span>
+          </div>
+          <h4 class="font-bold text-gray-900 dark:text-white mb-2">Choose Your Role</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Sign up as a Trainer to manage clients or as a Member to start your fitness journey
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="text-center">
+          <div class="w-12 h-12 md:w-14 md:h-14 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl md:text-2xl font-bold text-red-600 dark:text-red-400">2</span>
+          </div>
+          <h4 class="font-bold text-gray-900 dark:text-white mb-2">Pick Your Plan</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Select a subscription that fits your needs. Unlock more features as you grow
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="text-center">
+          <div class="w-12 h-12 md:w-14 md:h-14 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-xl md:text-2xl font-bold text-red-600 dark:text-red-400">3</span>
+          </div>
+          <h4 class="font-bold text-gray-900 dark:text-white mb-2">Access Everything</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Login to your personalized panel with all the tools you need to succeed
+          </p>
+        </div>
+      </div>
+
+      <!-- Visual Separator -->
+      <div class="flex items-center justify-between mt-8 mb-6">
+        <div class="h-px bg-gray-200 dark:bg-gray-700 flex-1"></div>
+        <svg class="w-6 h-6 mx-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <div class="h-px bg-gray-200 dark:bg-gray-700 flex-1"></div>
+      </div>
+
+      <!-- Access Info -->
+      <div class="text-center">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          <span class="font-semibold">🔐 Smart Access Control:</span> 
+          Features automatically unlock based on your subscription level and role
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
+            ✓ No Hidden Fees
+          </span>
+          <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
+            ✓ Upgrade Anytime
+          </span>
+          <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
+            ✓ Cancel Anytime
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="text-center mt-12">
+      <button class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transform hover:scale-105 transition-all duration-200 shadow-xl hover:shadow-2xl text-lg">
+        Start Your Free Trial
+        <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </button>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+        14-day free trial • No credit card required
+      </p>
+    </div>
+  </div>
+</section>
