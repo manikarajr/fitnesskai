@@ -1,0 +1,116 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+  <!-- Desktop Sidebar -->
+  <aside class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
+    <div class="flex flex-col flex-grow bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+      <!-- Logo -->
+      <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-3">
+          <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">{{ appTitle }}</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-6 space-y-2">
+        <a
+          *ngFor="let item of navItems"
+          [routerLink]="item.route"
+          routerLinkActive="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-600 dark:border-red-400"
+          class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 border-l-4 border-transparent group"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path *ngFor="let path of getIconPaths(item.icon)" [attr.d]="path" />
+          </svg>
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <!-- Theme Toggle & User Section -->
+      <div class="p-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        <!-- Theme Toggle -->
+        <button
+          (click)="toggleTheme()"
+          class="w-full flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
+        >
+          <span class="flex items-center space-x-3">
+            <svg *ngIf="themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg *ngIf="!themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <span class="font-medium">{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+          </span>
+        </button>
+
+        <!-- User Info -->
+        <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
+            <span class="text-white font-bold text-sm">{{ userInitials }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ userName }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ userRole }}</p>
+          </div>
+        </div>
+
+        <!-- Logout -->
+        <button   [routerLink]="'/login'" class="w-full flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="font-medium">Logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Header -->
+  <div class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between h-16 px-4">
+      <div class="flex items-center space-x-3">
+        <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <span class="text-lg font-bold text-gray-900 dark:text-white">{{ appTitle }}</span>
+      </div>
+      <button
+        (click)="toggleTheme()"
+        class="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+      >
+        <svg *ngIf="themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg *ngIf="!themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="lg:pl-64 pt-16 lg:pt-0 pb-20 lg:pb-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <ng-content></ng-content>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-around h-16">
+      <a
+        *ngFor="let item of mobileNavItems"
+        [routerLink]="item.route"
+        routerLinkActive="text-red-600 dark:text-red-400"
+        class="flex flex-col items-center justify-center flex-1 h-full text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+      >
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path *ngFor="let path of getIconPaths(item.icon)" [attr.d]="path" />
+        </svg>
+        <span class="text-xs font-medium">{{ item.label }}</span>
+      </a>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,39 @@
+// layout.component.scss
+
+:host {
+  display: block;
+}
+
+// Ensure icons inherit color from parent
+::ng-deep {
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+// Additional styling for smooth transitions
+a, button {
+  transition: all 0.2s ease-in-out;
+}
+
+// Ensure proper icon sizing and alignment
+.w-6 {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.w-7 {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.w-8 {
+  width: 2rem;
+  height: 2rem;
+}
+
+// Fix for potential icon alignment issues
+.flex-shrink-0 {
+  flex-shrink: 0;
+}

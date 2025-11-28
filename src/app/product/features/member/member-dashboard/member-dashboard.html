@@ -1,0 +1,246 @@
+<app-layout
+      [appTitle]="'GymPro Member'"
+      [navItems]="navItems"
+      [userName]="'Alex Thompson'"
+      [userRole]="'Premium Member'"
+      [userInitials]="'AT'"
+    >
+      <!-- Welcome Banner -->
+      <div class="bg-gradient-to-r from-red-600 to-red-700 dark:from-red-700 dark:to-red-800 rounded-xl shadow-aggressive p-8 mb-8 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold mb-2">Welcome Back, Alex!</h1>
+            <p class="text-red-100 text-lg">Ready to crush your workout today?</p>
+          </div>
+          <div class="hidden md:block">
+            <svg class="w-24 h-24 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-in Card -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+        <div class="bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 p-6">
+          <div class="flex items-center justify-between text-white">
+            <div>
+              <h2 class="text-2xl font-bold mb-1">Gym Check-In</h2>
+              <p class="text-green-100">Tap to mark your attendance</p>
+            </div>
+            <svg class="w-16 h-16 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="p-8">
+          <button class="w-full py-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
+            <div class="flex items-center justify-center space-x-3">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>CHECK IN NOW</span>
+            </div>
+          </button>
+          <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Last check-in: <span class="font-semibold text-gray-900 dark:text-white">Yesterday at 6:30 PM</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- This Month -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">12</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">Visits This Month</p>
+          <div class="mt-3 flex items-center text-sm">
+            <span class="text-green-600 dark:text-green-400 font-medium">+3</span>
+            <span class="text-gray-500 dark:text-gray-500 ml-2">vs last month</span>
+          </div>
+        </div>
+
+        <!-- Streak -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">5 Days</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">Current Streak</p>
+          <div class="mt-3 flex items-center text-sm">
+            <span class="text-orange-600 dark:text-orange-400 font-medium">Keep it up!</span>
+          </div>
+        </div>
+
+        <!-- Classes Attended -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">8</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">Classes Attended</p>
+          <div class="mt-3 flex items-center text-sm">
+            <span class="text-purple-600 dark:text-purple-400 font-medium">This month</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Today's Classes -->
+        <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Today's Classes</h2>
+          </div>
+          <div class="p-6">
+            @if (todayClasses.length > 0) {
+              <div class="space-y-4">
+                @for (class of todayClasses; track class.id) {
+                  <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <div class="flex items-start justify-between">
+                      <div class="flex items-start space-x-4 flex-1">
+                        <div class="text-center flex-shrink-0">
+                          <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ class.time }}</p>
+                          <p class="text-xs text-gray-600 dark:text-gray-400">{{ class.duration }}</p>
+                        </div>
+                        <div class="flex-1">
+                          <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ class.name }}</h3>
+                          <div class="flex flex-wrap gap-3 text-sm">
+                            <span class="flex items-center text-gray-600 dark:text-gray-400">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                              {{ class.trainer }}
+                            </span>
+                            <span class="flex items-center text-gray-600 dark:text-gray-400">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              {{ class.room }}
+                            </span>
+                            <span class="flex items-center text-gray-600 dark:text-gray-400">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                              </svg>
+                              {{ class.spots }} spots left
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white rounded-lg text-sm font-semibold transition-colors ml-4">
+                        Join
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-12">
+                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="text-gray-600 dark:text-gray-400 font-medium">No classes scheduled for today</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Membership & Profile -->
+        <div class="space-y-6">
+          <!-- Membership Card -->
+          <div class="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-sm font-semibold opacity-75">PREMIUM MEMBER</span>
+              <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-1">Alex Thompson</h3>
+            <p class="text-gray-400 text-sm mb-6">Member ID: #GT2023-0342</p>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-400">Plan Status</span>
+                <span class="px-3 py-1 bg-green-500 text-white rounded-full font-semibold">Active</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-400">Valid Until</span>
+                <span class="font-semibold">Dec 31, 2025</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-400">Auto-Renewal</span>
+                <span class="font-semibold">Enabled</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">This Week</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex items-center justify-between mb-2 text-sm">
+                  <span class="text-gray-600 dark:text-gray-400">Workout Days</span>
+                  <span class="font-bold text-gray-900 dark:text-white">4/7</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div class="bg-gradient-to-r from-red-500 to-red-600 h-2 rounded-full" style="width: 57%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-2 text-sm">
+                  <span class="text-gray-600 dark:text-gray-400">Weekly Goal</span>
+                  <span class="font-bold text-gray-900 dark:text-white">80%</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: 80%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Schedule -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">This Week's Schedule</h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            @for (day of weekSchedule; track day.day) {
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-3">{{ day.day }}</h3>
+                @if (day.classes.length > 0) {
+                  <div class="space-y-2">
+                    @for (class of day.classes; track class) {
+                      <div class="text-sm">
+                        <p class="font-medium text-gray-700 dark:text-gray-300">{{ class }}</p>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="text-sm text-gray-500 dark:text-gray-500">Rest day</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </app-layout>

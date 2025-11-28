@@ -1,0 +1,15 @@
+<div class="min-h-screen transition-colors duration-300"
+     [ngClass]="{ 'dark': themeService.isDarkMode() }">
+
+  <div class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <app-header></app-header>
+    <app-hero></app-hero>
+
+    <div id="services"><app-services></app-services></div>
+    <div id="features"><app-features></app-features></div>
+    <div id="how-it-works"><app-how-it-works></app-how-it-works></div>
+    <div id="pricing"><app-pricing></app-pricing></div>
+
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,12 +1,1 @@
-<div class="min-h-screen transition-colors duration-300"
-         [ngClass]="{'dark': isDarkMode}">
-      <div class="bg-white dark:bg-gray-900 transition-colors duration-300">
-        <app-header (themeToggle)="toggleTheme()"></app-header>
-        <app-hero></app-hero>
-        <app-services></app-services>
-        <app-features></app-features>
-        <app-how-it-works></app-how-it-works>
-        <app-pricing></app-pricing>
-        <app-footer></app-footer>
-      </div>
-    </div>
+<router-outlet></router-outlet>
