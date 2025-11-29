@@ -1,0 +1,24 @@
+// Add padding to body to prevent content from being hidden behind bottom nav on mobile
+:host {
+  display: block;
+}
+
+// Ensure smooth transitions
+nav {
+  transition: all 0.3s ease;
+}
+
+// Active state animations
+button {
+  &.active {
+    transform: scale(1.05);
+  }
+}
+
+// Add subtle shadow to bottom nav
+@media (max-width: 768px) {
+  // Add this class to your main content wrapper
+  :host ::ng-deep body {
+    padding-bottom: 4rem; // 64px for bottom nav
+  }
+}

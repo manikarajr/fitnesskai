@@ -1,51 +1,54 @@
-import { Component, EventEmitter, Output, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { ThemeService } from '../../../shared/theme.service';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
-export class Header implements OnInit {
-  @Output() themeToggle = new EventEmitter<void>();
-  isMobileMenuOpen = false;
+export class Header {
+  isDark = false;
   private isBrowser: boolean;
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
-    private router: Router,
-    public themeService: ThemeService
+    private router: Router
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      this.loadTheme();
+    }
   }
 
-  ngOnInit() {}
-
-  // Use ThemeService state
-  get isDark() {
-    return this.themeService.isDarkMode();
+  loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    this.isDark = savedTheme === 'dark';
+    this.applyTheme();
   }
 
-  onThemeToggle() {
-    this.themeService.toggleTheme();
+  toggleTheme() {
+    this.isDark = !this.isDark;
+    this.applyTheme();
+    if (this.isBrowser) {
+      localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+    }
   }
 
-  toggleMobileMenu() {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-
-  closeMobileMenu() {
-    this.isMobileMenuOpen = false;
+  applyTheme() {
+    if (this.isBrowser) {
+      if (this.isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
   }
 
   navigateToLogin() {
     this.router.navigate(['/login']);
-    this.closeMobileMenu();
   }
 
   scrollToSection(sectionId: string) {
@@ -62,7 +65,6 @@ export class Header implements OnInit {
         });
       }
     }
-    this.closeMobileMenu();
   }
 
   scrollToTop() {
@@ -72,6 +74,5 @@ export class Header implements OnInit {
         behavior: 'smooth'
       });
     }
-    this.closeMobileMenu();
   }
 }

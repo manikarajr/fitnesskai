@@ -1,144 +1,146 @@
-<section id="features" class="py-16 md:py-24 bg-white dark:bg-gray-900">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
-        <div class="text-center mb-12 md:mb-16">
-          <div class="inline-flex items-center space-x-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-2 rounded-full mb-4">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-            </svg>
-            <span class="font-bold text-sm">BUILT FOR CHAMPIONS</span>
+<section id="features" class="py-8 sm:py-12 md:py-16 lg:py-24 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Section Header -->
+    <div class="text-center mb-8 sm:mb-12 md:mb-16">
+      <!-- Badge -->
+      <div class="inline-flex items-center space-x-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-3 sm:mb-4">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+        </svg>
+        <span class="font-bold text-xs sm:text-sm uppercase tracking-wide">Built For Champions</span>
+      </div>
+      
+      <!-- Title -->
+      <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 px-4">
+        Why FitnessKai
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">Choose Us</span>
+      </h2>
+      
+      <!-- Description -->
+      <p class="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto px-4">
+        Simple, powerful features that help you focus on what matters - transforming lives.
+      </p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 md:mb-16">
+      
+      <div *ngFor="let feature of features" 
+           class="group">
+        
+        <!-- Feature Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-200 dark:border-gray-700 hover:border-red-500 dark:hover:border-red-500 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl h-full flex flex-col">
+          
+          <!-- Icon -->
+          <div class="flex-shrink-0 mb-3 sm:mb-4">
+            <div [ngClass]="[
+                   getColorClasses(feature.color).bg,
+                   getColorClasses(feature.color).bgDark
+                 ]"
+                 class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div [innerHTML]="feature.icon"
+                   [ngClass]="[
+                     getColorClasses(feature.color).text,
+                     getColorClasses(feature.color).textDark
+                   ]"></div>
+            </div>
           </div>
-          <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
-            WHY FITNESS PROS
-            <span class="text-red-600 dark:text-red-500"> CHOOSE US</span>
-          </h2>
-          <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-            Simple, powerful features that help you focus on what matters - transforming lives.
+          
+          <!-- Content -->
+          <div class="flex-grow">
+            <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2">
+              {{feature.title}}
+            </h3>
+            <p class="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+              {{feature.description}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual Feature Showcase -->
+    <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 relative overflow-hidden">
+      
+      <!-- Background Decoration -->
+      <div class="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      
+      <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center">
+        
+        <!-- Text Content -->
+        <div>
+          <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4">
+            Complete Fitness Management Platform
+          </h3>
+          <p class="text-red-100 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg">
+            Everything you need to run a successful fitness business - from member management to workout planning, all in one powerful platform.
           </p>
+          
+          <!-- Feature List -->
+          <ul class="space-y-2 sm:space-y-3">
+            <li class="flex items-center space-x-2 text-white text-sm sm:text-base">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>Multi-location gym management</span>
+            </li>
+            <li class="flex items-center space-x-2 text-white text-sm sm:text-base">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>Personalized workout plans for every client</span>
+            </li>
+            <li class="flex items-center space-x-2 text-white text-sm sm:text-base">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>Real-time progress tracking and analytics</span>
+            </li>
+            <li class="flex items-center space-x-2 text-white text-sm sm:text-base">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>Built-in social community features</span>
+            </li>
+          </ul>
         </div>
-
-        <!-- Features Grid -->
-        <div class="grid md:grid-cols-2 gap-8 lg:gap-12 mb-16">
-          <!-- Feature 1 -->
-          <div class="flex space-x-4">
-            <div class="flex-shrink-0">
-              <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-red-600 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        
+        <!-- Image Section -->
+        <div class="relative order-first md:order-last">
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop" 
+               alt="Fitness Management Features" 
+               class="rounded-xl sm:rounded-2xl shadow-2xl w-full"/>
+          
+          <!-- Stats Badge -->
+          <div class="absolute -bottom-3 sm:-bottom-4 -left-3 sm:-left-4 bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-xl">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
               </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Lightning Fast Setup</h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                Get your entire fitness business online in under 5 minutes. No technical skills needed - we handle everything for you.
-              </p>
-            </div>
-          </div>
-
-          <!-- Feature 2 -->
-          <div class="flex space-x-4">
-            <div class="flex-shrink-0">
-              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-blue-600 dark:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Bank-Level Security</h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                Your data and your clients' information are protected with enterprise-grade encryption and security measures.
-              </p>
-            </div>
-          </div>
-
-          <!-- Feature 3 -->
-          <div class="flex space-x-4">
-            <div class="flex-shrink-0">
-              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Keep 100% of Your Earnings</h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                No commission fees on your sales. Sell unlimited products and keep every dollar you earn.
-              </p>
-            </div>
-          </div>
-
-          <!-- Feature 4 -->
-          <div class="flex space-x-4">
-            <div class="flex-shrink-0">
-              <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-purple-600 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Works Everywhere</h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                Access from any device - phone, tablet, or computer. Your business is always with you, wherever you go.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Visual Feature Showcase -->
-        <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-3xl p-8 md:p-12 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-          <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">
-                AI That Works Like Magic
-              </h3>
-              <p class="text-red-100 mb-6 text-lg">
-                Our AI doesn't just generate generic workouts. It learns from millions of successful training programs to create personalized plans that actually get results.
-              </p>
-              <ul class="space-y-3">
-                <li class="flex items-center space-x-2 text-white">
-                  <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Adapts to each client's fitness level</span>
-                </li>
-                <li class="flex items-center space-x-2 text-white">
-                  <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Creates meal plans with exact macros</span>
-                </li>
-                <li class="flex items-center space-x-2 text-white">
-                  <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Adjusts programs based on progress</span>
-                </li>
-              </ul>
-            </div>
-            <div class="relative">
-              <img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?w=600&h=400&fit=crop" 
-                   alt="AI Fitness Features" 
-                   class="rounded-2xl shadow-2xl"/>
-              <div class="absolute -bottom-4 -left-4 bg-white dark:bg-gray-900 rounded-lg p-4 shadow-xl">
-                <div class="flex items-center space-x-3">
-                  <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">AI Generated</div>
-                    <div class="font-bold text-gray-900 dark:text-white">2,847 Workouts Today</div>
-                  </div>
-                </div>
+              <div>
+                <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Active Today</div>
+                <div class="text-sm sm:text-base font-bold text-gray-900 dark:text-white">2,847+ Members</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- Additional Info Section -->
+    <div class="mt-8 sm:mt-12 md:mt-16 text-center">
+      <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
+        Join thousands of fitness professionals transforming their business
+      </p>
+      <button class="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-lg sm:rounded-xl transform hover:scale-105 transition-all duration-200 shadow-xl hover:shadow-2xl text-sm sm:text-base">
+        Get Started Today
+        <svg class="inline-block w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
