@@ -16,8 +16,10 @@ interface PricingTier {
   yearlyPrice: number;
   badge?: string;
   featured?: boolean;
+  isCurrent?: boolean;
   features: PricingFeature[];
   adminFeatures: string[];
+  trainerFeatures: string[];
   memberFeatures: string[];
   buttonText: string;
   buttonStyle: string;
@@ -37,7 +39,6 @@ interface FAQ {
   styleUrl: './pricing.scss',
 })
 export class Pricing {
-  // Using Angular 17 signals for reactive state
   billingCycle = signal<'monthly' | 'yearly'>('monthly');
   selectedTier = signal<string>('professional');
   
@@ -54,111 +55,129 @@ export class Pricing {
       {
         id: 'starter',
         name: 'Starter',
-        description: 'Perfect for individual trainers just getting started',
-        monthlyPrice: 0,
-        yearlyPrice: 0,
-        buttonText: 'Start Free',
-        buttonStyle: 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white',
+        description: 'Perfect for small gyms getting started',
+        monthlyPrice: 49,
+        yearlyPrice: 39,
+        isCurrent: true,
+        badge: 'CURRENT PLAN',
+        buttonText: 'Your Current Plan',
+        buttonStyle: 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-not-allowed',
         features: [
-          { text: 'Up to 10 clients', included: true },
-          { text: 'Basic client management', included: true },
-          { text: 'Simple workout builder', included: true },
-          { text: 'Progress tracking', included: true },
+          { text: '1 gym location', included: true },
+          { text: 'Up to 5 trainers', included: true },
+          { text: 'Up to 100 members', included: true },
+          { text: 'Community feed', included: true },
+          { text: 'Image & video posts', included: true },
           { text: 'Email support', included: true },
-          { text: 'Mobile app access', included: true },
-          { text: 'Video coaching', included: false },
-          { text: 'Digital store', included: false },
-          { text: 'Custom branding', included: false },
         ],
         adminFeatures: [
-          'Client profiles & notes',
-          'Basic workout templates',
-          'Simple scheduling',
-          'Basic analytics'
+          'Gym profile management',
+          'Add & manage trainers (up to 5)',
+          'Add & manage members (up to 100)',
+          'View community feed activity',
+          'Basic analytics dashboard',
+          'Member attendance tracking'
+        ],
+        trainerFeatures: [
+          'Create workout plans',
+          'Assign workouts to members',
+          'Track member progress',
+          'Post images & videos to feed',
+          'Comment & like posts',
+          'Message members'
         ],
         memberFeatures: [
+          'View community feed',
+          'Post images & videos',
+          'Like & comment on posts',
+          'Follow other members',
           'View assigned workouts',
-          'Log exercises',
-          'Track basic progress',
-          'Message trainer'
+          'Track workout history',
+          'Message trainers'
         ]
       },
       {
         id: 'professional',
         name: 'Professional',
-        description: 'Everything you need to scale your fitness business',
-        monthlyPrice: 49,
-        yearlyPrice: 39,
+        description: 'For growing fitness businesses',
+        monthlyPrice: 99,
+        yearlyPrice: 79,
         badge: 'MOST POPULAR',
         featured: true,
-        buttonText: 'Start 14-Day Trial',
-        buttonStyle: 'bg-white hover:bg-gray-100 text-red-600 font-bold transform hover:scale-105',
+        buttonText: 'Upgrade to Professional',
+        buttonStyle: 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200',
         features: [
-          { text: 'Unlimited clients', included: true },
-          { text: 'Advanced program builder', included: true },
-          { text: 'AI workout generator', included: true },
-          { text: 'Video coaching sessions', included: true },
-          { text: 'Digital product store', included: true },
-          { text: 'Community features', included: true },
-          { text: 'Automated scheduling', included: true },
+          { text: 'Up to 3 gym locations', included: true },
+          { text: 'Up to 15 trainers', included: true },
+          { text: 'Up to 500 members', included: true },
+          { text: 'Community feed with HD media', included: true },
           { text: 'Priority support', included: true },
-          { text: 'Custom branding', included: false },
+          { text: 'Advanced analytics', included: true },
         ],
         adminFeatures: [
-          'Full client management suite',
-          'AI-powered program builder',
-          'Sell workout plans & ebooks',
-          'Live video coaching',
-          'Automated booking & reminders',
-          'Revenue analytics dashboard',
-          'Client retention tracking'
+          'Everything in Starter',
+          'Manage multiple locations (up to 3)',
+          'Extended trainer capacity (15)',
+          'Extended member capacity (500)',
+          'Advanced analytics & reports',
+          'Community feed moderation tools',
+          'Custom branding options'
+        ],
+        trainerFeatures: [
+          'Everything in Starter',
+          'Advanced workout templates',
+          'Post HD videos to feed',
+          'Tag members in posts',
+          'Trainer performance analytics',
+          'Group workout sessions'
         ],
         memberFeatures: [
-          'AI fitness coach access',
-          'Full workout library',
-          'Nutrition tracking',
-          'Community challenges',
-          'Progress photos & measurements',
-          'Book sessions online',
-          'Earn rewards & badges'
+          'Everything in Starter',
+          'Post HD images & videos',
+          'Tag trainers in posts',
+          'Advanced workout analytics',
+          'Achievement tracking',
+          'Progress photos'
         ]
       },
       {
         id: 'enterprise',
         name: 'Enterprise',
-        description: 'For gyms, studios, and large teams',
-        monthlyPrice: 199,
-        yearlyPrice: 166,
+        description: 'For gym chains & franchises',
+        monthlyPrice: 299,
+        yearlyPrice: 249,
         buttonText: 'Contact Sales',
-        buttonStyle: 'bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white',
+        buttonStyle: 'bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200',
         features: [
-          { text: 'Everything in Professional', included: true },
-          { text: 'Multiple trainer accounts', included: true },
-          { text: 'Custom branding & domain', included: true },
-          { text: 'API access', included: true },
-          { text: 'Advanced integrations', included: true },
+          { text: 'Unlimited gym locations', included: true },
+          { text: 'Unlimited trainers', included: true },
+          { text: 'Unlimited members', included: true },
+          { text: 'Enterprise community platform', included: true },
           { text: 'Dedicated account manager', included: true },
-          { text: 'Custom features on request', included: true },
-          { text: '24/7 phone support', included: true },
-          { text: 'SLA guarantee', included: true },
+          { text: '24/7 priority support', included: true },
         ],
         adminFeatures: [
-          'Multi-location management',
-          'Staff permission controls',
-          'Custom reporting',
-          'Bulk client import',
-          'Payment processing',
-          'Equipment booking system',
-          'Franchise support'
+          'Everything in Professional',
+          'Unlimited locations, trainers & members',
+          'Multi-location dashboard',
+          'Cross-location analytics',
+          'Advanced permission controls',
+          'API access for integrations',
+          'Dedicated account manager'
+        ],
+        trainerFeatures: [
+          'Everything in Professional',
+          'Work across multiple locations',
+          'Collaboration with other trainers',
+          'Enterprise workout library',
+          'Advanced member insights'
         ],
         memberFeatures: [
-          'Access multiple trainers',
-          'Premium content library',
-          'VIP community access',
-          'Early feature access',
-          'Personalized onboarding',
-          'Exclusive workshops',
-          'Priority booking'
+          'Everything in Professional',
+          'Access all gym locations',
+          'Cross-location check-ins',
+          'Premium community features',
+          'Priority support access'
         ]
       }
     ];
@@ -167,33 +186,33 @@ export class Pricing {
   private initializeFAQs(): void {
     this.faqs = [
       {
+        question: 'How does the three-panel system work?',
+        answer: 'Our platform includes three interconnected modules: Admin Panel (for gym owners to manage locations, trainers, and members), Trainer Panel (for trainers to create workouts and coach members), and Member Panel (for members to track workouts, post to community feed, and communicate). All three work seamlessly together.',
+        isOpen: false
+      },
+      {
+        question: 'What can members post on the community feed?',
+        answer: 'All plans include a community feed where members can post images and videos, like and comment on posts, and follow other members. Professional plans add HD video support and advanced social features.',
+        isOpen: false
+      },
+      {
         question: 'Can I switch between plans anytime?',
-        answer: 'Absolutely! You can upgrade, downgrade, or cancel your subscription at any time. Changes take effect at the next billing cycle, and we\'ll prorate any differences.',
+        answer: 'Absolutely! You can upgrade or downgrade your subscription at any time. Changes take effect at the next billing cycle, and we\'ll prorate any differences. Your data, including all community posts and workout history, is always preserved.',
         isOpen: false
       },
       {
-        question: 'Do you take commission on my digital product sales?',
-        answer: 'Never! You keep 100% of your earnings from selling workout plans, ebooks, or any digital products. We only charge the flat monthly subscription fee.',
+        question: 'How do trainer and member limits work?',
+        answer: 'The Starter plan supports up to 5 trainers and 100 members. Professional increases this to 15 trainers and 500 members. Enterprise removes all limits entirely, perfect for gym chains and franchises.',
         isOpen: false
       },
       {
-        question: 'What\'s included in the 14-day free trial?',
-        answer: 'You get full access to all Professional plan features for 14 days. No credit card required to start. You can explore every feature, add clients, and even start selling products.',
+        question: 'Can trainers and members use the platform on mobile?',
+        answer: 'Yes! All three panels (Admin, Trainer, and Member) are fully responsive and work on any device. Members can post to the community feed, view workouts, and track progress on the go. Trainers can coach and manage clients from anywhere.',
         isOpen: false
       },
       {
-        question: 'How does the AI workout generator work?',
-        answer: 'Our AI analyzes client goals, fitness levels, available equipment, and preferences to create personalized workout plans in seconds. You can customize and adjust any generated program.',
-        isOpen: false
-      },
-      {
-        question: 'Can my clients use the platform on mobile?',
-        answer: 'Yes! Both trainers and clients get access to native iOS and Android apps. Clients can view workouts, track progress, and communicate with you on the go.',
-        isOpen: false
-      },
-      {
-        question: 'What kind of support do you offer?',
-        answer: 'Starter plans include email support (24-hour response). Professional plans get priority support with live chat. Enterprise customers receive 24/7 phone support and a dedicated account manager.',
+        question: 'What support is included with each plan?',
+        answer: 'Starter includes email support. Professional adds priority support with faster response times. Enterprise includes 24/7 priority support and a dedicated account manager to help you succeed.',
         isOpen: false
       }
     ];
@@ -204,7 +223,9 @@ export class Pricing {
   }
 
   selectTier(tierId: string): void {
+    if (tierId === 'starter' && this.pricingTiers.find(t => t.id === tierId)?.isCurrent) return;
     this.selectedTier.set(tierId);
+    console.log(`Selected tier: ${tierId}`);
   }
 
   toggleFAQ(index: number): void {

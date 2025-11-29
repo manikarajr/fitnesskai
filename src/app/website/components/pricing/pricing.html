@@ -1,36 +1,40 @@
-<section id="pricing" class="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+<section id="pricing" class="py-8 sm:py-12 md:py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    
     <!-- Section Header -->
-    <div class="text-center mb-12 md:mb-16">
-      <div class="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-full mb-4">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="text-center mb-8 sm:mb-12 md:mb-16">
+      <!-- Badge -->
+      <div class="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-3 sm:mb-4">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <span class="font-bold text-sm uppercase tracking-wide">Simple, Transparent Pricing</span>
+        <span class="font-bold text-xs sm:text-sm uppercase tracking-wide">Simple, Transparent Pricing</span>
       </div>
       
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
+      <!-- Title -->
+      <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 px-4">
         Choose Your
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500"> Power Level</span>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">Power Level</span>
       </h2>
       
-      <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-        One platform, two powerful panels. Perfect for trainers managing clients 
-        or members crushing their fitness goals.
+      <!-- Description -->
+      <p class="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
+        Three powerful plans for your fitness business. Choose the perfect fit for managing your gym locations, 
+        trainers, and members with our integrated community platform.
       </p>
 
       <!-- Billing Toggle -->
-      <div class="flex items-center justify-center space-x-4">
+      <div class="flex items-center justify-center space-x-3 sm:space-x-4">
         <span [class.text-gray-900]="billingCycle() === 'monthly'"
               [class.dark:text-white]="billingCycle() === 'monthly'"
               [class.text-gray-500]="billingCycle() === 'yearly'"
               [class.dark:text-gray-400]="billingCycle() === 'yearly'"
-              class="font-medium">
+              class="font-medium text-sm sm:text-base">
           Monthly
         </span>
         
         <button (click)="toggleBillingCycle()" 
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 [class.bg-red-600]="billingCycle() === 'yearly'"
                 [class.bg-gray-300]="billingCycle() === 'monthly'"
                 role="switch"
@@ -45,19 +49,19 @@
               [class.dark:text-white]="billingCycle() === 'yearly'"
               [class.text-gray-500]="billingCycle() === 'monthly'"
               [class.dark:text-gray-400]="billingCycle() === 'monthly'"
-              class="font-medium">
+              class="font-medium text-sm sm:text-base">
           Yearly
-          <span class="ml-1 text-green-600 dark:text-green-400 text-sm font-bold">Save 20%</span>
+          <span class="ml-1 text-green-600 dark:text-green-400 text-xs sm:text-sm font-bold">Save 20%</span>
         </span>
       </div>
     </div>
 
-    <!-- Pricing Cards -->
-    <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+    <!-- Pricing Cards - Three Column Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-6xl mx-auto">
       <div *ngFor="let tier of pricingTiers" 
-           [class.md:scale-110]="tier.featured"
-           [class.z-10]="tier.featured"
-           class="relative">
+           [class.order-first]="tier.isCurrent"
+           [class.md:order-none]="tier.isCurrent"
+           class="relative w-full">
         
         <!-- Card -->
         <div [class.bg-gradient-to-br]="tier.featured"
@@ -65,51 +69,58 @@
              [class.to-red-700]="tier.featured"
              [class.bg-white]="!tier.featured"
              [class.dark:bg-gray-800]="!tier.featured"
-             class="rounded-2xl shadow-xl p-6 lg:p-8 h-full flex flex-col">
+             [class.ring-2]="tier.isCurrent"
+             [class.ring-blue-500]="tier.isCurrent"
+             [class.md:scale-105]="tier.featured"
+             [class.shadow-2xl]="tier.featured"
+             class="rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl p-4 sm:p-5 md:p-6 lg:p-8 h-full flex flex-col transition-all duration-300">
           
           <!-- Badge -->
           <div *ngIf="tier.badge" 
-               class="absolute -top-0 left-1/2 transform -translate-x-1/2">
-            <div class="bg-yellow-400 text-black px-4 py-1 rounded-full text-xs font-black uppercase tracking-wide animate-pulse">
+               class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+            <div [class.bg-blue-400]="tier.isCurrent"
+                 [class.bg-yellow-400]="!tier.isCurrent"
+                 [class.animate-pulse]="!tier.isCurrent"
+                 class="text-black px-3 py-1 sm:px-4 rounded-full text-xs font-black uppercase tracking-wide shadow-lg">
               {{tier.badge}}
             </div>
           </div>
           
           <!-- Header -->
-          <div class="text-center mb-6">
+          <div class="text-center mb-4 sm:mb-5 md:mb-6">
             <h3 [class.text-white]="tier.featured"
                 [class.text-gray-900]="!tier.featured"
                 [class.dark:text-white]="!tier.featured"
-                class="text-2xl font-bold mb-2">
+                class="text-xl sm:text-2xl font-bold mb-2">
               {{tier.name}}
             </h3>
             
             <p [class.text-red-100]="tier.featured"
                [class.text-gray-600]="!tier.featured"
                [class.dark:text-gray-400]="!tier.featured"
-               class="text-sm mb-4">
+               class="text-xs sm:text-sm mb-3 sm:mb-4">
               {{tier.description}}
             </p>
             
             <!-- Price -->
-            <div class="flex items-end justify-center mb-2">
+            <div class="flex items-end justify-center mb-1 sm:mb-2">
               <span [class.text-white]="tier.featured"
                     [class.text-gray-900]="!tier.featured"
                     [class.dark:text-white]="!tier.featured"
-                    class="text-4xl font-black">
+                    class="text-3xl sm:text-4xl font-black">
                 ${{getPrice(tier)}}
               </span>
               <span [class.text-red-100]="tier.featured"
                     [class.text-gray-600]="!tier.featured"
                     [class.dark:text-gray-400]="!tier.featured"
-                    class="ml-2">
-                /{{billingCycle() === 'monthly' ? 'month' : 'month'}}
+                    class="ml-1 sm:ml-2 text-sm sm:text-base">
+                /month
               </span>
             </div>
             
             <!-- Yearly Savings -->
             <div *ngIf="billingCycle() === 'yearly' && getSavings(tier) > 0"
-                 class="text-sm"
+                 class="text-xs sm:text-sm font-medium"
                  [class.text-red-100]="tier.featured"
                  [class.text-green-600]="!tier.featured"
                  [class.dark:text-green-400]="!tier.featured">
@@ -117,36 +128,45 @@
             </div>
           </div>
 
-          <!-- Features List -->
-          <div class="flex-grow space-y-3 mb-6">
+          <!-- Key Features List -->
+          <div class="flex-grow space-y-2 sm:space-y-2.5 mb-4 sm:mb-5 md:mb-6">
             <div *ngFor="let feature of tier.features" 
-                 class="flex items-start space-x-3">
-              <span [innerHTML]="feature.included ? getCheckIcon() : getXIcon()"></span>
+                 class="flex items-start space-x-2 sm:space-x-3">
+              <span [innerHTML]="feature.included ? getCheckIcon() : getXIcon()" class="mt-0.5"></span>
               <span [class.text-white]="tier.featured"
                     [class.text-gray-700]="!tier.featured && feature.included"
                     [class.text-gray-400]="!tier.featured && !feature.included"
                     [class.dark:text-gray-300]="!tier.featured && feature.included"
                     [class.dark:text-gray-500]="!tier.featured && !feature.included"
                     [class.line-through]="!feature.included"
-                    class="text-sm">
+                    class="text-xs sm:text-sm leading-tight">
                 {{feature.text}}
               </span>
             </div>
           </div>
 
-          <!-- Feature Breakdown -->
-          <div class="border-t mb-6 pt-6"
-               [class.border-red-500/30]="tier.featured"
-               [class.border-gray-200]="!tier.featured"
-               [class.dark:border-gray-700]="!tier.featured">
+          <!-- Expandable Feature Breakdown -->
+          <details class="border-t mb-4 sm:mb-5 md:mb-6 pt-4 sm:pt-5 md:pt-6 group"
+                   [class.border-red-500/30]="tier.featured"
+                   [class.border-gray-200]="!tier.featured"
+                   [class.dark:border-gray-700]="!tier.featured">
+            <summary [class.text-white]="tier.featured"
+                     [class.text-gray-900]="!tier.featured"
+                     [class.dark:text-white]="!tier.featured"
+                     class="cursor-pointer font-semibold text-xs sm:text-sm mb-3 sm:mb-4 flex items-center justify-between">
+              <span>View all features</span>
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
             
             <!-- Admin Features -->
-            <div class="mb-4">
+            <div class="mb-3 sm:mb-4">
               <h4 [class.text-red-100]="tier.featured"
                   [class.text-gray-600]="!tier.featured"
                   [class.dark:text-gray-400]="!tier.featured"
                   class="text-xs font-bold uppercase tracking-wide mb-2">
-                Trainer Panel Includes:
+                Admin Panel:
               </h4>
               <ul class="space-y-1">
                 <li *ngFor="let feature of tier.adminFeatures"
@@ -154,7 +174,27 @@
                     [class.text-gray-600]="!tier.featured"
                     [class.dark:text-gray-400]="!tier.featured"
                     class="text-xs flex items-start">
-                  <span class="mr-1">•</span>
+                  <span class="mr-1.5">•</span>
+                  <span>{{feature}}</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Trainer Features -->
+            <div class="mb-3 sm:mb-4">
+              <h4 [class.text-red-100]="tier.featured"
+                  [class.text-gray-600]="!tier.featured"
+                  [class.dark:text-gray-400]="!tier.featured"
+                  class="text-xs font-bold uppercase tracking-wide mb-2">
+                Trainer Panel:
+              </h4>
+              <ul class="space-y-1">
+                <li *ngFor="let feature of tier.trainerFeatures"
+                    [class.text-white/90]="tier.featured"
+                    [class.text-gray-600]="!tier.featured"
+                    [class.dark:text-gray-400]="!tier.featured"
+                    class="text-xs flex items-start">
+                  <span class="mr-1.5">•</span>
                   <span>{{feature}}</span>
                 </li>
               </ul>
@@ -166,7 +206,7 @@
                   [class.text-gray-600]="!tier.featured"
                   [class.dark:text-gray-400]="!tier.featured"
                   class="text-xs font-bold uppercase tracking-wide mb-2">
-                Member Panel Includes:
+                Member Panel:
               </h4>
               <ul class="space-y-1">
                 <li *ngFor="let feature of tier.memberFeatures"
@@ -174,46 +214,73 @@
                     [class.text-gray-600]="!tier.featured"
                     [class.dark:text-gray-400]="!tier.featured"
                     class="text-xs flex items-start">
-                  <span class="mr-1">•</span>
+                  <span class="mr-1.5">•</span>
                   <span>{{feature}}</span>
                 </li>
               </ul>
             </div>
-          </div>
+          </details>
 
           <!-- CTA Button -->
           <button (click)="selectTier(tier.id)"
+                  [disabled]="tier.isCurrent"
                   [class]="tier.buttonStyle"
-                  class="w-full py-3 rounded-lg transition-all duration-200 font-bold">
+                  class="w-full py-2.5 sm:py-3 md:py-3.5 rounded-lg text-sm sm:text-base transition-all duration-200 font-bold disabled:cursor-not-allowed">
             {{tier.buttonText}}
           </button>
         </div>
       </div>
     </div>
 
+    <!-- Upgrade Benefits Banner -->
+    <div class="mt-8 sm:mt-12 md:mt-16 max-w-4xl mx-auto">
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-blue-200 dark:border-blue-800">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
+              Ready to grow your fitness business?
+            </h3>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Upgrade to Professional and unlock more locations, trainers, members, HD video posts, advanced analytics, and priority support.
+            </p>
+          </div>
+          <button class="w-full sm:w-auto flex-shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base">
+            Upgrade Now
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- FAQ Section -->
-    <div class="mt-20 max-w-4xl mx-auto">
-      <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+    <div class="mt-12 sm:mt-16 md:mt-20 max-w-4xl mx-auto">
+      <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-6 sm:mb-8 md:mb-12 px-4">
         Frequently Asked Questions
       </h3>
       
-      <div class="space-y-4">
+      <div class="space-y-3 sm:space-y-4">
         <div *ngFor="let faq of faqs; let i = index"
-             class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg">
+             class="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg">
           <button (click)="toggleFAQ(i)"
-                  class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-inset">
-            <h4 class="font-semibold text-gray-900 dark:text-white pr-4">
+                  class="w-full px-4 sm:px-6 py-3 sm:py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-inset">
+            <h4 class="font-semibold text-sm sm:text-base text-gray-900 dark:text-white pr-4">
               {{faq.question}}
             </h4>
             <svg [class.rotate-180]="faq.isOpen"
-                 class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
+                 class="w-5 h-5 text-gray-500 transform transition-transform duration-200 flex-shrink-0"
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
           </button>
           
           <div *ngIf="faq.isOpen"
-               class="px-6 pb-4 text-gray-600 dark:text-gray-400 animate-fadeIn">
+               class="px-4 sm:px-6 pb-3 sm:pb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 animate-fadeIn">
             {{faq.answer}}
           </div>
         </div>
@@ -221,45 +288,45 @@
     </div>
 
     <!-- Trust Badges -->
-    <div class="mt-16 flex flex-wrap justify-center items-center gap-6">
-      <div class="flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-6 py-3 rounded-full">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="mt-8 sm:mt-12 md:mt-16 flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 sm:gap-4 md:gap-6 px-4">
+      <div class="flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 sm:px-6 py-2 sm:py-3 rounded-full w-full sm:w-auto justify-center">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
         </svg>
-        <span class="font-bold">30-Day Money Back Guarantee</span>
+        <span class="font-bold text-xs sm:text-sm">30-Day Money Back</span>
       </div>
       
-      <div class="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-6 py-3 rounded-full">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-4 sm:px-6 py-2 sm:py-3 rounded-full w-full sm:w-auto justify-center">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
         </svg>
-        <span class="font-bold">Secure Payment Processing</span>
+        <span class="font-bold text-xs sm:text-sm">Secure Payment</span>
       </div>
       
-      <div class="flex items-center space-x-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 px-6 py-3 rounded-full">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex items-center space-x-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 px-4 sm:px-6 py-2 sm:py-3 rounded-full w-full sm:w-auto justify-center">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
         </svg>
-        <span class="font-bold">Instant Setup</span>
+        <span class="font-bold text-xs sm:text-sm">Instant Setup</span>
       </div>
     </div>
 
     <!-- Bottom CTA -->
-    <div class="text-center mt-16">
-      <p class="text-gray-600 dark:text-gray-400 mb-6 text-lg">
+    <div class="text-center mt-12 sm:mt-16 px-4">
+      <p class="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg">
         Still have questions? Our team is here to help!
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transform hover:scale-105 transition-all duration-200 shadow-xl hover:shadow-2xl">
-          Start Your Free Trial
-          <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-lg mx-auto">
+        <button class="px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg sm:rounded-xl transform hover:scale-105 transition-all duration-200 shadow-xl hover:shadow-2xl text-sm sm:text-base">
+          Get Started Today
+          <svg class="inline-block w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
           </svg>
         </button>
         
-        <button class="px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-xl border-2 border-gray-200 dark:border-gray-600 transition-all duration-200">
+        <button class="px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-lg sm:rounded-xl border-2 border-gray-200 dark:border-gray-600 transition-all duration-200 text-sm sm:text-base">
           Schedule a Demo
-          <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="inline-block w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
         </button>
