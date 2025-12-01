@@ -2,20 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar for dark mode */
+/* Custom scrollbar for dark mode (kept but will be hidden) */
 @layer base {
   :root {
     --scrollbar-bg: #f3f4f6;
     --scrollbar-thumb: #9ca3af;
   }
-  
+
   .dark {
     --scrollbar-bg: #1f2937;
     --scrollbar-thumb: #4b5563;
   }
 }
 
-/* Scrollbar styles */
+/* Scrollbar styles — will be hidden but kept for reference */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -63,11 +63,30 @@ html {
   background-clip: text;
 }
 
-/* Custom shadows for aggressive theme */
+/* Custom aggressive shadow */
 .shadow-aggressive {
   box-shadow: 0 10px 40px -10px rgba(239, 68, 68, 0.3);
 }
 
 .dark .shadow-aggressive {
   box-shadow: 0 10px 40px -10px rgba(239, 68, 68, 0.5);
+}
+
+/* ---------------------------------------- */
+/* === Hide scrollbar for ALL browsers === */
+/* ---------------------------------------- */
+
+/* Chrome, Safari, Edge */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE & old Edge */
+html {
+  -ms-overflow-style: none;
 }

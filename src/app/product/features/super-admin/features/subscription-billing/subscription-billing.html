@@ -1,0 +1,220 @@
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Subscription & Billing</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Manage subscription plans, billing, and transactions
+      </p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>
+        <span class="font-medium">Export</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <app-stats-card
+      label="Total Revenue"
+      [value]="'$' + totalRevenue.toLocaleString()"
+      [change]="15.7"
+      icon="currency"
+      color="green">
+    </app-stats-card>
+
+    <app-stats-card
+      label="Active Subscriptions"
+      [value]="activeSubscriptions"
+      [change]="5.2"
+      icon="check"
+      color="blue">
+    </app-stats-card>
+
+    <app-stats-card
+      label="Pending Payments"
+      [value]="pendingPayments"
+      icon="clock"
+      color="yellow">
+    </app-stats-card>
+
+    <app-stats-card
+      label="Average Value"
+      [value]="'$' + averageValue"
+      [change]="3.8"
+      icon="chart"
+      color="purple">
+    </app-stats-card>
+  </div>
+
+  <!-- Pricing Plans Overview -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Subscription Plans</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Starter Plan -->
+      <div class="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:border-red-500 dark:hover:border-red-400 transition-colors">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white">Starter</h3>
+          <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-sm font-semibold rounded-full">
+            42 Active
+          </span>
+        </div>
+        <div class="mb-4">
+          <span class="text-3xl font-black text-gray-900 dark:text-white">$49</span>
+          <span class="text-gray-600 dark:text-gray-400">/month</span>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            1 gym location
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Up to 5 trainers
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Up to 100 members
+          </li>
+        </ul>
+      </div>
+
+      <!-- Professional Plan -->
+      <div class="border-2 border-red-500 dark:border-red-400 rounded-lg p-6 relative">
+        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+          <span class="bg-red-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase">Popular</span>
+        </div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white">Professional</h3>
+          <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full">
+            78 Active
+          </span>
+        </div>
+        <div class="mb-4">
+          <span class="text-3xl font-black text-gray-900 dark:text-white">$99</span>
+          <span class="text-gray-600 dark:text-gray-400">/month</span>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Up to 3 gym locations
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Up to 15 trainers
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Up to 500 members
+          </li>
+        </ul>
+      </div>
+
+      <!-- Enterprise Plan -->
+      <div class="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:border-red-500 dark:hover:border-red-400 transition-colors">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white">Enterprise</h3>
+          <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-sm font-semibold rounded-full">
+            22 Active
+          </span>
+        </div>
+        <div class="mb-4">
+          <span class="text-3xl font-black text-gray-900 dark:text-white">$299</span>
+          <span class="text-gray-600 dark:text-gray-400">/month</span>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Unlimited gym locations
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Unlimited trainers
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Unlimited members
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Subscriptions -->
+  <div>
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white">Active Subscriptions</h2>
+      
+      <div class="flex items-center space-x-3">
+        <select [(ngModel)]="filterPlan"
+                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500">
+          <option value="all">All Plans</option>
+          <option value="starter">Starter</option>
+          <option value="professional">Professional</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+        
+        <select [(ngModel)]="filterStatus"
+                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500">
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+        </select>
+      </div>
+    </div>
+    
+    <app-data-table
+      [columns]="subscriptionColumns"
+      [data]="subscriptions"
+      [actions]="subscriptionActions"
+      [pagination]="subscriptionPagination"
+      [loading]="loading"
+      emptyMessage="No subscriptions found"
+      (pageChange)="onSubscriptionPageChange($event)">
+    </app-data-table>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div>
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white">Recent Transactions</h2>
+      <a href="#" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
+        View All →
+      </a>
+    </div>
+    
+    <app-data-table
+      [columns]="transactionColumns"
+      [data]="transactions"
+      [actions]="transactionActions"
+      [pagination]="transactionPagination"
+      [loading]="loading"
+      emptyMessage="No transactions found"
+      (pageChange)="onTransactionPageChange($event)">
+    </app-data-table>
+  </div>
+</div>

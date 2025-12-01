@@ -1,0 +1,84 @@
+<div class="space-y-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Security & Audit Logs</h1>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Monitor security events and access logs
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Login Attempts</h3>
+            <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full">
+              Safe
+            </span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-2">1,247</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Today's login attempts</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Failed Logins</h3>
+            <span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-sm font-semibold rounded-full">
+              Monitor
+            </span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-2">23</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Failed attempts today</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Blocked IPs</h3>
+            <span class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm font-semibold rounded-full">
+              Active
+            </span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-2">8</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Currently blocked</p>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Security Events</h3>
+        <div class="space-y-3">
+          <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3">
+              <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">Successful login from new device</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">john@powerhouse.com • 2 minutes ago</p>
+            </div>
+          </div>
+
+          <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mr-3">
+              <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">Multiple failed login attempts</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">unknown@email.com • 15 minutes ago</p>
+            </div>
+          </div>
+
+          <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mr-3">
+              <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">IP address blocked</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">192.168.1.100 • 1 hour ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

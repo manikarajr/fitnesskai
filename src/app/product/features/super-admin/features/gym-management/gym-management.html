@@ -1,0 +1,218 @@
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gym Management</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Manage all registered gyms and their subscriptions
+      </p>
+    </div>
+    <button (click)="openForm()"
+            class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg flex items-center space-x-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <span class="font-medium">Add New Gym</span>
+    </button>
+  </div>
+
+  <!-- Filters & Search -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Search -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Search Gyms
+        </label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <input type="text"
+                 [(ngModel)]="searchTerm"
+                 (input)="onSearch()"
+                 placeholder="Search by name, owner, or email..."
+                 class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500">
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Status
+        </label>
+        <select [(ngModel)]="filterStatus"
+                (change)="onStatusFilter()"
+                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+
+      <!-- Plan Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Plan
+        </label>
+        <select [(ngModel)]="filterPlan"
+                (change)="onPlanFilter()"
+                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <option value="all">All Plans</option>
+          <option value="starter">Starter</option>
+          <option value="professional">Professional</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gyms Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="filteredGyms"
+    [actions]="actions"
+    [pagination]="pagination"
+    [loading]="loading"
+    [selectable]="true"
+    emptyMessage="No gyms found"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSort($event)">
+  </app-data-table>
+</div>
+
+<!-- Off-canvas Form -->
+<app-offcanvas-panel
+  [isOpen]="isFormOpen()"
+  [title]="isEditMode() ? 'Edit Gym' : 'Add New Gym'"
+  [subtitle]="isEditMode() ? 'Update gym information' : 'Register a new gym in the system'"
+  size="lg"
+  (close)="closeForm()">
+  
+  <form [formGroup]="gymForm" (ngSubmit)="saveGym()" class="space-y-6">
+    <!-- Gym Name -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Gym Name <span class="text-red-500">*</span>
+      </label>
+      <input type="text"
+             formControlName="name"
+             placeholder="Enter gym name"
+             class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+             [class.border-red-500]="gymForm.get('name')?.invalid && gymForm.get('name')?.touched">
+      <p *ngIf="gymForm.get('name')?.invalid && gymForm.get('name')?.touched" 
+         class="mt-1 text-sm text-red-600 dark:text-red-400">
+        Gym name is required (min 3 characters)
+      </p>
+    </div>
+
+    <!-- Owner Name -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Owner Name <span class="text-red-500">*</span>
+      </label>
+      <input type="text"
+             formControlName="owner"
+             placeholder="Enter owner name"
+             class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+             [class.border-red-500]="gymForm.get('owner')?.invalid && gymForm.get('owner')?.touched">
+      <p *ngIf="gymForm.get('owner')?.invalid && gymForm.get('owner')?.touched" 
+         class="mt-1 text-sm text-red-600 dark:text-red-400">
+        Owner name is required
+      </p>
+    </div>
+
+    <!-- Email & Phone -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Email <span class="text-red-500">*</span>
+        </label>
+        <input type="email"
+               formControlName="email"
+               placeholder="gym@example.com"
+               class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+               [class.border-red-500]="gymForm.get('email')?.invalid && gymForm.get('email')?.touched">
+        <p *ngIf="gymForm.get('email')?.invalid && gymForm.get('email')?.touched" 
+           class="mt-1 text-sm text-red-600 dark:text-red-400">
+          Valid email is required
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Phone <span class="text-red-500">*</span>
+        </label>
+        <input type="tel"
+               formControlName="phone"
+               placeholder="+1 234 567 8900"
+               class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+               [class.border-red-500]="gymForm.get('phone')?.invalid && gymForm.get('phone')?.touched">
+        <p *ngIf="gymForm.get('phone')?.invalid && gymForm.get('phone')?.touched" 
+           class="mt-1 text-sm text-red-600 dark:text-red-400">
+          Phone number is required
+        </p>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Address <span class="text-red-500">*</span>
+      </label>
+      <textarea formControlName="address"
+                rows="3"
+                placeholder="Enter gym address"
+                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                [class.border-red-500]="gymForm.get('address')?.invalid && gymForm.get('address')?.touched"></textarea>
+      <p *ngIf="gymForm.get('address')?.invalid && gymForm.get('address')?.touched" 
+         class="mt-1 text-sm text-red-600 dark:text-red-400">
+        Address is required
+      </p>
+    </div>
+
+    <!-- Plan & Status -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Subscription Plan <span class="text-red-500">*</span>
+        </label>
+        <select formControlName="plan"
+                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <option value="starter">Starter - $49/month</option>
+          <option value="professional">Professional - $99/month</option>
+          <option value="enterprise">Enterprise - $299/month</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Status <span class="text-red-500">*</span>
+        </label>
+        <select formControlName="status"
+                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <button type="button"
+              (click)="closeForm()"
+              class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium">
+        Cancel
+      </button>
+      <button type="submit"
+              [disabled]="gymForm.invalid"
+              class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+        {{ isEditMode() ? 'Update Gym' : 'Add Gym' }}
+      </button>
+    </div>
+  </form>
+</app-offcanvas-panel>

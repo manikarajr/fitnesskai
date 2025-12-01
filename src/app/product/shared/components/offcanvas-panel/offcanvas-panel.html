@@ -1,0 +1,41 @@
+<!-- Backdrop -->
+<div *ngIf="isOpen"
+     (click)="onBackdropClick()"
+     class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70 z-40 animate-fadeIn"></div>
+
+<!-- Panel -->
+<div *ngIf="isOpen"
+     class="fixed inset-y-0 right-0 flex max-w-full pl-10 z-50">
+  <div [ngClass]="['w-screen', panelWidth, 'animate-slideInRight']" 
+       (click)="$event.stopPropagation()">
+    <div class="h-full flex flex-col bg-white dark:bg-gray-800 shadow-xl overflow-y-auto">
+      
+      <!-- Header -->
+      <div class="px-4 sm:px-6 py-6 bg-gradient-to-r from-red-600 to-red-700">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <h2 class="text-xl font-bold text-white">
+              {{ title }}
+            </h2>
+            <p *ngIf="subtitle" class="mt-1 text-sm text-red-100">
+              {{ subtitle }}
+            </p>
+          </div>
+          <button (click)="onClose()"
+                  type="button"
+                  class="ml-4 rounded-md text-red-100 hover:text-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
+            <span class="sr-only">Close panel</span>
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 px-4 sm:px-6 py-6">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>
