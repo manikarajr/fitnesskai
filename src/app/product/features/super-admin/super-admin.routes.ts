@@ -32,7 +32,7 @@ export const superAdminRoutes: Routes = [
       },
       {
         path: 'subscriptions',
-        loadComponent: () => import('./features/subscription-billing/subscription-billing').then(m => m.SubscriptionBilling)
+        loadComponent: () => import('./features/subscription/subscription-billing/subscription-billing').then(m => m.SubscriptionBilling)
       },
       {
         path: 'reports',

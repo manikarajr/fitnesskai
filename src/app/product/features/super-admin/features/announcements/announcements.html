@@ -1,103 +1,272 @@
 <div class="space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Announcements & Support</h1>
-          <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Send announcements and manage support tickets
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Announcements & Support</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Send announcements and manage support tickets
+      </p>
+    </div>
+    <button 
+      (click)="openForm()"
+      class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg flex items-center space-x-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <span class="font-medium">New Announcement</span>
+    </button>
+  </div>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Recent Announcements -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Announcements</h3>
+      <div class="space-y-4">
+        <div *ngFor="let announcement of announcements()" 
+             [ngClass]="'border-l-4 border-' + getTypeColor(announcement.type) + '-500 pl-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors rounded-r cursor-pointer group'">
+          <div class="flex items-center justify-between mb-1">
+            <h4 class="font-semibold text-gray-900 dark:text-white">{{ announcement.title }}</h4>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                {{ getRelativeTime(announcement.createdAt) }}
+              </span>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-1">
+                <button 
+                  (click)="openForm(announcement)"
+                  class="p-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </button>
+                <button 
+                  (click)="deleteAnnouncement(announcement.id)"
+                  class="p-1 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            {{ announcement.message }}
           </p>
-        </div>
-        <button class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg flex items-center space-x-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <span class="font-medium">New Announcement</span>
-        </button>
-      </div>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Announcements</h3>
-          <div class="space-y-4">
-            <div class="border-l-4 border-blue-500 pl-4 py-2">
-              <div class="flex items-center justify-between mb-1">
-                <h4 class="font-semibold text-gray-900 dark:text-white">System Maintenance</h4>
-                <span class="text-xs text-gray-500 dark:text-gray-400">2 days ago</span>
-              </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                Scheduled maintenance on Dec 15, 2024 from 2 AM to 4 AM EST.
-              </p>
-            </div>
-
-            <div class="border-l-4 border-green-500 pl-4 py-2">
-              <div class="flex items-center justify-between mb-1">
-                <h4 class="font-semibold text-gray-900 dark:text-white">New Feature Release</h4>
-                <span class="text-xs text-gray-500 dark:text-gray-400">1 week ago</span>
-              </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                Introducing advanced analytics dashboard for all Professional tier users.
-              </p>
-            </div>
-
-            <div class="border-l-4 border-yellow-500 pl-4 py-2">
-              <div class="flex items-center justify-between mb-1">
-                <h4 class="font-semibold text-gray-900 dark:text-white">Policy Update</h4>
-                <span class="text-xs text-gray-500 dark:text-gray-400">2 weeks ago</span>
-              </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                Updated terms of service. Please review the changes in your admin panel.
-              </p>
-            </div>
+          <div class="flex items-center space-x-2">
+            <span [ngClass]="'px-2 py-1 bg-' + getTypeColor(announcement.type) + '-100 dark:bg-' + getTypeColor(announcement.type) + '-900/30 text-' + getTypeColor(announcement.type) + '-700 dark:text-' + getTypeColor(announcement.type) + '-300 text-xs font-medium rounded'">
+              {{ announcement.type }}
+            </span>
+            <span class="text-xs text-gray-500 dark:text-gray-400">
+              → {{ getAudienceLabel(announcement.targetAudience) }}
+            </span>
           </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Support Tickets</h3>
-          <div class="space-y-4">
-            <div class="flex items-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
-              <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
-              </div>
-              <div class="flex-1">
-                <div class="flex items-center justify-between mb-1">
-                  <h4 class="font-semibold text-gray-900 dark:text-white">Payment Issue</h4>
-                  <span class="px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded">High</span>
-                </div>
-                <p class="text-sm text-gray-600 dark:text-gray-400">PowerHouse Gym - 30 min ago</p>
-              </div>
-            </div>
+        <div *ngIf="announcements().length === 0" 
+             class="text-center py-8 text-gray-500 dark:text-gray-400">
+          <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+          </svg>
+          <p class="text-sm">No announcements yet</p>
+        </div>
+      </div>
+    </div>
 
-            <div class="flex items-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-              <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <div class="flex-1">
-                <div class="flex items-center justify-between mb-1">
-                  <h4 class="font-semibold text-gray-900 dark:text-white">Feature Request</h4>
-                  <span class="px-2 py-1 bg-yellow-600 text-white text-xs font-semibold rounded">Medium</span>
-                </div>
-                <p class="text-sm text-gray-600 dark:text-gray-400">FitZone Central - 2 hours ago</p>
-              </div>
+    <!-- Support Tickets -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Support Tickets</h3>
+      <div class="space-y-4">
+        <div class="flex items-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+          <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mr-3">
+            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <h4 class="font-semibold text-gray-900 dark:text-white">Payment Issue</h4>
+              <span class="px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded">High</span>
             </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">PowerHouse Gym - 30 min ago</p>
+          </div>
+        </div>
 
-            <div class="flex items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <div class="flex-1">
-                <div class="flex items-center justify-between mb-1">
-                  <h4 class="font-semibold text-gray-900 dark:text-white">General Inquiry</h4>
-                  <span class="px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">Low</span>
-                </div>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Elite Fitness - 5 hours ago</p>
-              </div>
+        <div class="flex items-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+          <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mr-3">
+            <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <h4 class="font-semibold text-gray-900 dark:text-white">Feature Request</h4>
+              <span class="px-2 py-1 bg-yellow-600 text-white text-xs font-semibold rounded">Medium</span>
             </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">FitZone Central - 2 hours ago</p>
+          </div>
+        </div>
+
+        <div class="flex items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <h4 class="font-semibold text-gray-900 dark:text-white">General Inquiry</h4>
+              <span class="px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">Low</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Elite Fitness - 5 hours ago</p>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Announcement Form Offcanvas -->
+<app-offcanvas-panel
+  [isOpen]="isFormOpen()"
+  [title]="isEditMode() ? 'Edit Announcement' : 'New Announcement'"
+  [subtitle]="isEditMode() ? 'Update announcement details' : 'Create a new announcement for your users'"
+  size="lg"
+  (close)="closeForm()">
+  
+  <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    
+    <!-- Title -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Announcement Title *
+      </label>
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="e.g., System Maintenance Alert"
+        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
+        [class.border-red-500]="announcementForm.get('title')?.invalid && announcementForm.get('title')?.touched">
+      <p *ngIf="announcementForm.get('title')?.invalid && announcementForm.get('title')?.touched" 
+         class="mt-1 text-sm text-red-600 dark:text-red-400">
+        Title is required (max 100 characters)
+      </p>
+    </div>
+
+    <!-- Message -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Message *
+      </label>
+      <textarea
+        formControlName="message"
+        rows="4"
+        placeholder="Enter your announcement message..."
+        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none transition-colors"
+        [class.border-red-500]="announcementForm.get('message')?.invalid && announcementForm.get('message')?.touched"></textarea>
+      <div class="flex items-center justify-between mt-1">
+        <p *ngIf="announcementForm.get('message')?.invalid && announcementForm.get('message')?.touched" 
+           class="text-sm text-red-600 dark:text-red-400">
+          Message is required (max 500 characters)
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 ml-auto">
+          {{ announcementForm.get('message')?.value?.length || 0 }} / 500
+        </p>
+      </div>
+    </div>
+
+    <!-- Announcement Type -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Announcement Type *
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <div *ngFor="let type of announcementTypes" 
+             (click)="announcementForm.patchValue({ type: type.value })"
+             [ngClass]="[
+               'p-4 border-2 rounded-lg cursor-pointer transition-all',
+               announcementForm.get('type')?.value === type.value
+                 ? 'border-' + type.color + '-500 bg-' + type.color + '-50 dark:bg-' + type.color + '-900/20'
+                 : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+             ]">
+          <div class="flex items-center space-x-3">
+            <div [ngClass]="'w-4 h-4 rounded-full bg-' + type.color + '-500'"></div>
+            <span class="font-medium text-gray-900 dark:text-white">{{ type.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Audience -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Target Audience *
+      </label>
+      <div class="space-y-2">
+        <div *ngFor="let option of audienceOptions"
+             (click)="toggleAudience(option.value)"
+             [ngClass]="[
+               'flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all',
+               isAudienceSelected(option.value)
+                 ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                 : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+             ]">
+          <div [ngClass]="[
+            'w-5 h-5 rounded border-2 flex items-center justify-center transition-colors',
+            isAudienceSelected(option.value)
+              ? 'border-red-500 bg-red-500'
+              : 'border-gray-300 dark:border-gray-600'
+          ]">
+            <svg *ngIf="isAudienceSelected(option.value)" 
+                 class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <span class="ml-3 text-gray-900 dark:text-white font-medium">{{ option.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Date (Optional) -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Schedule For Later (Optional)
+      </label>
+      <input
+        type="datetime-local"
+        formControlName="scheduledDate"
+        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        Leave empty to publish immediately
+      </p>
+    </div>
+
+    <!-- Status -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Status *
+      </label>
+      <select
+        formControlName="status"
+        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
+        <option value="draft">Save as Draft</option>
+        <option value="published">Publish Now</option>
+        <option value="scheduled">Schedule</option>
+      </select>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <button
+        type="button"
+        (click)="closeForm()"
+        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="announcementForm.invalid"
+        class="px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+        {{ isEditMode() ? 'Update Announcement' : 'Create Announcement' }}
+      </button>
+    </div>
+  </form>
+  
+</app-offcanvas-panel>

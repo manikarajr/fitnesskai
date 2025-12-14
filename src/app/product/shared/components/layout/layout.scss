@@ -1,39 +1,57 @@
-// layout.component.scss
+// Custom scrollbar styling
+:host ::ng-deep {
+  // Smooth transitions for sidebar
+  aside {
+    will-change: width;
+  }
 
-:host {
-  display: block;
-}
+  // Ensure tooltips appear above other content
+  .group:hover .absolute {
+    z-index: 9999;
+  }
 
-// Ensure icons inherit color from parent
-::ng-deep {
-  svg {
-    display: inline-block;
-    vertical-align: middle;
+  // Prevent layout shift during transitions
+  main {
+    will-change: padding-left;
+  }
+
+  // Smooth icon rotation for toggle button
+  button svg {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  // Enhanced hover effects for navigation items
+  nav a {
+    &:hover {
+      transform: translateX(2px);
+    }
+  }
+
+  // Mobile sidebar slide animation enhancement
+  @media (max-width: 1023px) {
+    aside {
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
   }
 }
 
-// Additional styling for smooth transitions
+// Tooltip arrow positioning fix
+.absolute.left-full {
+  &::before {
+    content: '';
+  }
+}
+
+// Prevent text selection on toggle button
+button {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+// Accessibility improvements
 a, button {
-  transition: all 0.2s ease-in-out;
-}
-
-// Ensure proper icon sizing and alignment
-.w-6 {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.w-7 {
-  width: 1.75rem;
-  height: 1.75rem;
-}
-
-.w-8 {
-  width: 2rem;
-  height: 2rem;
-}
-
-// Fix for potential icon alignment issues
-.flex-shrink-0 {
-  flex-shrink: 0;
+  &:focus-visible {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+  }
 }

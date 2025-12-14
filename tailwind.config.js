@@ -21,9 +21,19 @@ module.exports = {
           900: '#7f1d1d',
         },
       },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-      },
+fontFamily: {
+  sans: [
+    'Roboto',
+    'system-ui',
+    '-apple-system',
+    'BlinkMacSystemFont',
+    '"Segoe UI"',
+    'Arial',
+    'sans-serif',
+  ],
+},
+
+
       boxShadow: {
         'aggressive': '0 10px 40px -10px rgba(239, 68, 68, 0.3)',
         'aggressive-dark': '0 10px 40px -10px rgba(239, 68, 68, 0.5)',

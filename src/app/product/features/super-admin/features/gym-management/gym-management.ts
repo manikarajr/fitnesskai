@@ -54,12 +54,6 @@ export class GymManagement implements OnInit {
 
   actions: TableAction[] = [
     {
-      label: 'View',
-      icon: 'view',
-      color: 'primary',
-      action: (gym) => this.viewGym(gym)
-    },
-    {
       label: 'Edit',
       icon: 'edit',
       color: 'primary',

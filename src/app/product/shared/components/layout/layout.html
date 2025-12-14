@@ -1,53 +1,117 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
   <!-- Desktop Sidebar -->
-  <aside class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-    <div class="flex flex-col flex-grow bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
-      <!-- Logo -->
-      <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center space-x-3">
-          <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <aside 
+    [class.w-64]="!isMiniSidebar"
+    [class.w-20]="isMiniSidebar"
+    class="hidden lg:fixed lg:inset-y-0 lg:flex lg:flex-col transition-all duration-300 ease-in-out z-50">
+    <div class="flex flex-col flex-grow bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-x-hidden">
+      <!-- Logo & Toggle -->
+      <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+        <!-- Full Logo (shown when expanded) -->
+        <div 
+          *ngIf="!isMiniSidebar"
+          class="flex items-center space-x-3 min-w-0">
+          <svg class="w-8 h-8 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <span class="text-xl font-bold text-gray-900 dark:text-white">{{ appTitle }}</span>
+          <span class="text-xl font-bold text-gray-900 dark:text-white truncate transition-opacity duration-200">
+            {{ appTitle }}
+          </span>
         </div>
+        
+        <!-- Toggle Button (centered when minimized) -->
+        <button
+          (click)="toggleSidebar()"
+          [class.mx-auto]="isMiniSidebar"
+          class="flex-shrink-0 p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          [title]="isMiniSidebar ? 'Expand sidebar' : 'Minimize sidebar'">
+          <svg 
+            *ngIf="!isMiniSidebar"
+            class="w-5 h-5" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M15 3v18"/>
+            <path d="m10 15-3-3 3-3"/>
+          </svg>
+          <svg 
+            *ngIf="isMiniSidebar"
+            class="w-5 h-5" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M15 3v18"/>
+            <path d="m8 9 3 3-3 3"/>
+          </svg>
+        </button>
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 px-4 py-6 space-y-2">
+      <nav class="flex-1 px-3 py-4 overflow-y-auto overflow-x-hidden space-y-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
         <a
           *ngFor="let item of navItems"
           [routerLink]="item.route"
           routerLinkActive="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-600 dark:border-red-400"
-          class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 border-l-4 border-transparent group"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          [class.justify-center]="isMiniSidebar"
+          [class.justify-start]="!isMiniSidebar"
+          [title]="isMiniSidebar ? item.label : ''"
+          class="relative flex items-center gap-x-3 px-3 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 border-l-4 border-transparent group">
+          <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path *ngFor="let path of getIconPaths(item.icon)" [attr.d]="path" />
           </svg>
-          <span class="font-medium">{{ item.label }}</span>
+          <span 
+            *ngIf="!isMiniSidebar"
+            class="font-medium truncate transition-opacity duration-200">
+            {{ item.label }}
+          </span>
+          
+          <!-- Tooltip for mini sidebar -->
+          <div 
+            *ngIf="isMiniSidebar"
+            class="absolute left-full ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+            {{ item.label }}
+            <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-700"></div>
+          </div>
         </a>
       </nav>
 
       <!-- Theme Toggle & User Section -->
-      <div class="p-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+      <div class="border-t border-gray-200 dark:border-gray-700">
         <!-- Theme Toggle -->
         <button
           (click)="toggleTheme()"
-          class="w-full flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
-        >
-          <span class="flex items-center space-x-3">
-            <svg *ngIf="themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <svg *ngIf="!themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-            <span class="font-medium">{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+          [class.justify-center]="isMiniSidebar"
+          [class.justify-start]="!isMiniSidebar"
+          [title]="isMiniSidebar ? (themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode') : ''"
+          class="relative w-full flex items-center gap-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 group">
+          <svg *ngIf="themeService.isDarkMode()" class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg *ngIf="!themeService.isDarkMode()" class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          <span 
+            *ngIf="!isMiniSidebar"
+            class="font-medium truncate transition-opacity duration-200">
+            {{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
           </span>
+          
+          <!-- Tooltip for mini sidebar -->
+          <div 
+            *ngIf="isMiniSidebar"
+            class="absolute left-full ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+            {{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
+            <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-700"></div>
+          </div>
         </button>
 
         <!-- User Info -->
-        <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
+        <div 
+          *ngIf="!isMiniSidebar"
+          class="mx-3 my-3 flex items-center space-x-3 px-3 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg transition-all duration-200">
+          <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
             <span class="text-white font-bold text-sm">{{ userInitials }}</span>
           </div>
           <div class="flex-1 min-w-0">
@@ -56,12 +120,45 @@
           </div>
         </div>
 
+        <!-- User Avatar Only (Mini Sidebar) -->
+        <div 
+          *ngIf="isMiniSidebar"
+          class="flex justify-center py-3 relative group">
+          <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center cursor-pointer">
+            <span class="text-white font-bold text-sm">{{ userInitials }}</span>
+          </div>
+          
+          <!-- Tooltip for mini sidebar -->
+          <div class="absolute left-full ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+            <div class="font-medium">{{ userName }}</div>
+            <div class="text-xs text-gray-300">{{ userRole }}</div>
+            <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-700"></div>
+          </div>
+        </div>
+
         <!-- Logout -->
-        <button   [routerLink]="'/login'" class="w-full flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button 
+          [routerLink]="'/login'"
+          [class.justify-center]="isMiniSidebar"
+          [class.justify-start]="!isMiniSidebar"
+          [title]="isMiniSidebar ? 'Logout' : ''"
+          class="relative w-full flex items-center gap-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 group">
+          <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          <span class="font-medium">Logout</span>
+          <span 
+            *ngIf="!isMiniSidebar"
+            class="font-medium transition-opacity duration-200">
+            Logout
+          </span>
+          
+          <!-- Tooltip for mini sidebar -->
+          <div 
+            *ngIf="isMiniSidebar"
+            class="absolute left-full ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+            Logout
+            <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-700"></div>
+          </div>
         </button>
       </div>
     </div>
@@ -71,6 +168,13 @@
   <div class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
     <div class="flex items-center justify-between h-16 px-4">
       <div class="flex items-center space-x-3">
+        <button
+          (click)="toggleMobileSidebar()"
+          class="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
         <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
@@ -78,8 +182,7 @@
       </div>
       <button
         (click)="toggleTheme()"
-        class="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-      >
+        class="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
         <svg *ngIf="themeService.isDarkMode()" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
@@ -90,8 +193,82 @@
     </div>
   </div>
 
+  <!-- Mobile Sidebar Overlay -->
+  <div 
+    *ngIf="isMobileSidebarOpen"
+    (click)="toggleMobileSidebar()"
+    class="lg:hidden fixed inset-0 bg-gray-900/50 z-40 transition-opacity duration-300"
+    [@fadeIn]>
+  </div>
+
+  <!-- Mobile Sidebar -->
+  <aside 
+    [class.translate-x-0]="isMobileSidebarOpen"
+    [class.-translate-x-full]="!isMobileSidebarOpen"
+    class="lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out">
+    <div class="flex flex-col h-full">
+      <!-- Mobile Header -->
+      <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-3">
+          <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">{{ appTitle }}</span>
+        </div>
+        <button
+          (click)="toggleMobileSidebar()"
+          class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <nav class="flex-1 px-3 py-4 overflow-y-auto space-y-1">
+        <a
+          *ngFor="let item of navItems"
+          [routerLink]="item.route"
+          (click)="toggleMobileSidebar()"
+          routerLinkActive="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-600 dark:border-red-400"
+          class="flex items-center gap-x-3 px-3 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 border-l-4 border-transparent">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path *ngFor="let path of getIconPaths(item.icon)" [attr.d]="path" />
+          </svg>
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <!-- Mobile User Section -->
+      <div class="p-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        <div class="flex items-center space-x-3 px-3 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
+            <span class="text-white font-bold text-sm">{{ userInitials }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ userName }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ userRole }}</p>
+          </div>
+        </div>
+
+        <button 
+          [routerLink]="'/login'"
+          (click)="toggleMobileSidebar()"
+          class="w-full flex items-center gap-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="font-medium">Logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
   <!-- Main Content -->
-  <main class="lg:pl-64 pt-16 lg:pt-0 pb-20 lg:pb-0">
+  <main 
+    [class.lg:pl-64]="!isMiniSidebar"
+    [class.lg:pl-20]="isMiniSidebar"
+    class="pt-16 lg:pt-0 transition-all duration-300 ease-in-out">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <ng-content></ng-content>
     </div>
@@ -104,8 +281,7 @@
         *ngFor="let item of mobileNavItems"
         [routerLink]="item.route"
         routerLinkActive="text-red-600 dark:text-red-400"
-        class="flex flex-col items-center justify-center flex-1 h-full text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-      >
+        class="flex flex-col items-center justify-center flex-1 h-full text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path *ngFor="let path of getIconPaths(item.icon)" [attr.d]="path" />
         </svg>

@@ -1,16 +1,158 @@
 <div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Member Management</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Manage members across all gyms
+      </p>
+    </div>
+    <button (click)="openAddMemberPanel()"
+            class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Add Member
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Member Management</h1>
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          Manage members across all gyms
-        </p>
+        <input type="text" [(ngModel)]="filters.search" (input)="applyFilters()"
+               placeholder="Search members..."
+               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
       </div>
-      
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center">
-        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-        </svg>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Member Management</h3>
-        <p class="text-gray-600 dark:text-gray-400">View and manage all gym members and their memberships</p>
+      <div>
+        <select [(ngModel)]="filters.gym" (change)="applyFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Gyms</option>
+          <option *ngFor="let gym of availableGyms" [value]="gym.id">{{ gym.name }}</option>
+        </select>
+      </div>
+      <div>
+        <select [(ngModel)]="filters.membership" (change)="applyFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Plans</option>
+          <option value="basic">Basic</option>
+          <option value="premium">Premium</option>
+          <option value="vip">VIP</option>
+        </select>
+      </div>
+      <div>
+        <select [(ngModel)]="filters.status" (change)="applyFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      <div>
+        <button (click)="resetFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Reset
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="filteredMembers"
+    [actions]="tableActions"
+    [pagination]="pagination"
+    [loading]="loading"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSort($event)">
+  </app-data-table>
+
+  <!-- Offcanvas Panel -->
+  <app-offcanvas-panel
+    [isOpen]="isPanelOpen"
+    [title]="isEditMode ? 'Edit Member' : 'Add New Member'"
+    [subtitle]="isEditMode ? 'Update member information' : 'Create a new member profile'"
+    [size]="'lg'"
+    (close)="closePanel()">
+    
+    <form [formGroup]="memberForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Personal Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name *</label>
+            <input type="text" formControlName="name"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+            <p *ngIf="memberForm.get('name')?.invalid && memberForm.get('name')?.touched"
+               class="mt-1 text-sm text-red-600">Name is required</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email *</label>
+            <input type="email" formControlName="email"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+            <p *ngIf="memberForm.get('email')?.invalid && memberForm.get('email')?.touched"
+               class="mt-1 text-sm text-red-600">Valid email is required</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phone</label>
+            <input type="tel" formControlName="phone"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Join Date *</label>
+            <input type="date" formControlName="joinDate"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Membership Details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gym *</label>
+            <select formControlName="gymId"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+              <option value="">Select Gym</option>
+              <option *ngFor="let gym of availableGyms" [value]="gym.id">{{ gym.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Membership Plan *</label>
+            <select formControlName="membershipType"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+              <option value="basic">Basic</option>
+              <option value="premium">Premium</option>
+              <option value="vip">VIP</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status *</label>
+            <select formControlName="status"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Expiry Date</label>
+            <input type="date" formControlName="expiryDate"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button type="button" (click)="closePanel()"
+                class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="memberForm.invalid || submitting"
+                class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50">
+          {{ isEditMode ? 'Update Member' : 'Create Member' }}
+        </button>
+      </div>
+    </form>
+  </app-offcanvas-panel>
+</div>

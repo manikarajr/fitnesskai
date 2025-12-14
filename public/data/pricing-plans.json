@@ -1,0 +1,73 @@
+{
+  "plans": [
+    {
+      "id": 1,
+      "name": "Starter",
+      "price": 49,
+      "billingCycle": "monthly",
+      "isPopular": false,
+      "activeCount": 42,
+      "features": [
+        "1 gym location",
+        "Up to 5 trainers",
+        "Up to 100 members",
+        "Basic reporting",
+        "Email support"
+      ],
+      "isCustom": false
+    },
+    {
+      "id": 2,
+      "name": "Professional",
+      "price": 99,
+      "billingCycle": "monthly",
+      "isPopular": true,
+      "activeCount": 78,
+      "features": [
+        "Up to 3 gym locations",
+        "Up to 15 trainers",
+        "Up to 500 members",
+        "Advanced reporting & analytics",
+        "Priority email & phone support",
+        "Custom branding"
+      ],
+      "isCustom": false
+    },
+    {
+      "id": 3,
+      "name": "Enterprise",
+      "price": 299,
+      "billingCycle": "monthly",
+      "isPopular": false,
+      "activeCount": 22,
+      "features": [
+        "Unlimited gym locations",
+        "Unlimited trainers",
+        "Unlimited members",
+        "Enterprise reporting & analytics",
+        "24/7 dedicated support",
+        "Custom integrations",
+        "White-label solution"
+      ],
+      "isCustom": false
+    },
+    {
+      "id": 4,
+      "name": "Business Annual",
+      "price": 999,
+      "billingCycle": "yearly",
+      "isPopular": false,
+      "activeCount": 15,
+      "features": [
+        "Up to 5 gym locations",
+        "Up to 25 trainers",
+        "Up to 1000 members",
+        "Advanced reporting & analytics",
+        "Priority support",
+        "Custom branding",
+        "2 months free (vs monthly)"
+      ],
+      "isCustom": false
+    }
+  ]
+}

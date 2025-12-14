@@ -1,16 +1,203 @@
 <div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Management</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Manage gym administrators and their permissions
+      </p>
+    </div>
+    <button (click)="openAddAdminPanel()"
+            class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Add Admin
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gym Admin Management</h1>
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          Manage gym administrators and their permissions
-        </p>
+        <input type="text"
+               [(ngModel)]="filters.search"
+               (input)="applyFilters()"
+               placeholder="Search by name or email..."
+               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
       </div>
-      
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center">
-        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-        </svg>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Admin Management</h3>
-        <p class="text-gray-600 dark:text-gray-400">Similar to Gym Management - list, add, edit gym administrators</p>
+      <div>
+        <select [(ngModel)]="filters.status"
+                (change)="applyFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div>
+        <select [(ngModel)]="filters.role"
+                (change)="applyFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Roles</option>
+          <option value="super-admin">Super Admin</option>
+          <option value="gym-admin">Gym Admin</option>
+        </select>
+      </div>
+      <div>
+        <button (click)="resetFilters()"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Reset Filters
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="filteredAdmins"
+    [actions]="tableActions"
+    [pagination]="pagination"
+    [loading]="loading"
+    [selectable]="false"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSort($event)">
+  </app-data-table>
+
+  <!-- Offcanvas Panel for Add/Edit -->
+  <app-offcanvas-panel
+    [isOpen]="isPanelOpen"
+    [title]="isEditMode ? 'Edit Admin' : 'Add New Admin'"
+    [subtitle]="isEditMode ? 'Update admin details and permissions' : 'Create a new gym administrator'"
+    [size]="'lg'"
+    (close)="closePanel()">
+    
+    <form [formGroup]="adminForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Personal Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Personal Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Full Name *
+            </label>
+            <input type="text"
+                   formControlName="name"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                   placeholder="John Doe">
+            <p *ngIf="adminForm.get('name')?.invalid && adminForm.get('name')?.touched"
+               class="mt-1 text-sm text-red-600 dark:text-red-400">
+              Name is required
+            </p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Email *
+            </label>
+            <input type="email"
+                   formControlName="email"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                   placeholder="john@example.com">
+            <p *ngIf="adminForm.get('email')?.invalid && adminForm.get('email')?.touched"
+               class="mt-1 text-sm text-red-600 dark:text-red-400">
+              Valid email is required
+            </p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Phone
+            </label>
+            <input type="tel"
+                   formControlName="phone"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                   placeholder="+1 (555) 000-0000">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Status *
+            </label>
+            <select formControlName="status"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Role & Permissions -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Role & Permissions</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Role *
+            </label>
+            <select formControlName="role"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+              <option value="gym-admin">Gym Admin</option>
+              <option value="super-admin">Super Admin</option>
+            </select>
+          </div>
+
+          <!-- Gym Assignment (only for gym-admin) -->
+          <div *ngIf="adminForm.get('role')?.value === 'gym-admin'">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Assigned Gyms *
+            </label>
+            <div class="space-y-2 max-h-48 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg p-3">
+              <label *ngFor="let gym of availableGyms" class="flex items-center space-x-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <input type="checkbox"
+                       [checked]="isGymSelected(gym.id)"
+                       (change)="toggleGym(gym.id)"
+                       class="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                <span class="text-sm text-gray-900 dark:text-white">{{ gym.name }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Permissions -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Permissions
+            </label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <label *ngFor="let permission of availablePermissions" 
+                     class="flex items-center space-x-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <input type="checkbox"
+                       [checked]="isPermissionSelected(permission.key)"
+                       (change)="togglePermission(permission.key)"
+                       class="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                <span class="text-sm text-gray-900 dark:text-white">{{ permission.label }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button type="button"
+                (click)="closePanel()"
+                class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Cancel
+        </button>
+        <button type="submit"
+                [disabled]="adminForm.invalid || submitting"
+                class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          <span *ngIf="!submitting">{{ isEditMode ? 'Update Admin' : 'Create Admin' }}</span>
+          <span *ngIf="submitting" class="flex items-center">
+            <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+          </span>
+        </button>
+      </div>
+    </form>
+  </app-offcanvas-panel>
+</div>
