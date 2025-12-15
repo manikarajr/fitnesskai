@@ -1,30 +1,30 @@
 <div class="space-y-6">
   <!-- Page Header -->
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        Welcome back! Here's what's happening with your platform.
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+      <p class="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+        Welcome back! Here's what's happening.
       </p>
     </div>
-    <div class="flex items-center space-x-3">
-      <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+    <div class="flex items-center space-x-2 sm:space-x-3">
+      <button class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2 text-sm">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
         </svg>
-        <span class="font-medium">Export Report</span>
+        <span class="font-medium sm:inline">Export</span>
       </button>
-      <button class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg flex items-center space-x-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <button class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2 text-sm">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
         </svg>
-        <span class="font-medium">Add New Gym</span>
+        <span class="font-medium">Add Gym</span>
       </button>
     </div>
   </div>
 
   <!-- Stats Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
     <app-stats-card
       label="Total Gyms"
       [value]="stats.totalGyms"
@@ -59,80 +59,79 @@
   </div>
 
   <!-- Charts & Activity Row -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
     <!-- Revenue Chart -->
-    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between mb-6">
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
         <div>
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Revenue Overview</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Monthly revenue trends</p>
+          <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Revenue Overview</h2>
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Monthly revenue trends</p>
         </div>
-        <select class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500">
+        <select class="w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500">
           <option>Last 6 months</option>
           <option>Last 12 months</option>
           <option>This year</option>
         </select>
       </div>
       
-      <!-- Placeholder for chart -->
-      <div class="h-64 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+      <div class="h-48 sm:h-64 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
         <div class="text-center">
-          <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
-          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Chart will be rendered here</p>
+          <p class="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">Chart will be rendered here</p>
         </div>
       </div>
     </div>
 
     <!-- Quick Stats -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Quick Stats</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+      <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">Quick Stats</h2>
       
-      <div class="space-y-4">
-        <div class="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Pending Approvals</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">14</p>
+      <div class="space-y-3 sm:space-y-4">
+        <div class="flex items-center justify-between p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+          <div class="min-w-0 flex-1">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Pending Approvals</p>
+            <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">14</p>
           </div>
-          <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0 ml-3">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
         </div>
 
-        <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Support Tickets</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">8</p>
+        <div class="flex items-center justify-between p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div class="min-w-0 flex-1">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Support Tickets</p>
+            <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">8</p>
           </div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 ml-3">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
             </svg>
           </div>
         </div>
 
-        <div class="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">New Signups (Today)</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">23</p>
+        <div class="flex items-center justify-between p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <div class="min-w-0 flex-1">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">New Signups</p>
+            <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">23</p>
           </div>
-          <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 ml-3">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
           </div>
         </div>
 
-        <div class="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">System Health</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">99.9%</p>
+        <div class="flex items-center justify-between p-3 sm:p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+          <div class="min-w-0 flex-1">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">System Health</p>
+            <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">99.9%</p>
           </div>
-          <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0 ml-3">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
           </div>
@@ -142,12 +141,12 @@
   </div>
 
   <!-- Recent Activity & Top Gyms -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
     <!-- Recent Activity -->
     <div>
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Recent Activity</h2>
-        <a href="#" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
+      <div class="mb-3 sm:mb-4 flex items-center justify-between">
+        <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Recent Activity</h2>
+        <a href="#" class="text-xs sm:text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
           View All →
         </a>
       </div>
@@ -163,9 +162,9 @@
 
     <!-- Top Performing Gyms -->
     <div>
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Top Performing Gyms</h2>
-        <a href="#" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
+      <div class="mb-3 sm:mb-4 flex items-center justify-between">
+        <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Top Performing Gyms</h2>
+        <a href="#" class="text-xs sm:text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
           View All →
         </a>
       </div>
@@ -173,8 +172,10 @@
         [columns]="gymColumns"
         [data]="topGyms"
         [actions]="gymActions"
+        [pagination]="gymPagination"
         [loading]="loading"
-        emptyMessage="No gyms available">
+        emptyMessage="No gyms available"
+        (pageChange)="onGymPageChange($event)">
       </app-data-table>
     </div>
   </div>

@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { StatsCard } from '../../../../shared/components/stats-card/stats-card';
 import { DataTable, PaginationData, TableAction, TableColumn } from '../../../../shared/components/data-table/data-table';
 
-
-
 interface DashboardStats {
   totalGyms: number;
   totalMembers: number;
@@ -84,6 +82,14 @@ export class SuperAdminDashboard implements OnInit {
     totalPages: 3,
     totalItems: 25,
     itemsPerPage: 10
+  };
+
+  // Add pagination for gyms
+  gymPagination: PaginationData = {
+    currentPage: 1,
+    totalPages: 2,
+    totalItems: 10,
+    itemsPerPage: 5
   };
 
   loading = false;
@@ -181,6 +187,11 @@ export class SuperAdminDashboard implements OnInit {
   onActivityPageChange(page: number): void {
     this.activityPagination.currentPage = page;
     this.loadRecentActivities();
+  }
+
+  onGymPageChange(page: number): void {
+    this.gymPagination.currentPage = page;
+    this.loadTopGyms();
   }
 
   viewGym(gym: TopGym): void {
