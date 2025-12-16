@@ -46,6 +46,7 @@ export class DataTable {
   selectedRows: Set<any> = new Set();
   sortKey: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
+  Math = Math;
 
   toggleRowSelection(row: any): void {
     if (this.selectedRows.has(row)) {
@@ -98,19 +99,19 @@ export class DataTable {
     const lowerValue = value?.toLowerCase();
     
     if (lowerValue === 'active' || lowerValue === 'approved' || lowerValue === 'paid' || lowerValue === 'success') {
-      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
     }
     if (lowerValue === 'inactive' || lowerValue === 'suspended' || lowerValue === 'failed') {
-      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
     }
     if (lowerValue === 'pending' || lowerValue === 'processing') {
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
     }
     if (lowerValue === 'blocked' || lowerValue === 'cancelled') {
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
     }
     
-    return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+    return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
   }
 
   formatDate(date: string | Date): string {
@@ -121,10 +122,28 @@ export class DataTable {
     });
   }
 
+  formatMobileDate(date: string | Date): string {
+    const now = new Date();
+    const itemDate = new Date(date);
+    const diffTime = Math.abs(now.getTime() - itemDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 30) {
+      return `${diffDays}d ago`;
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return `${months}mo ago`;
+    } else {
+      return itemDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    }
+  }
+
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(value);
   }
 
@@ -143,6 +162,34 @@ export class DataTable {
       default:
         return `${baseClasses} hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400`;
     }
+  }
+
+  // Helper methods for mobile card design
+  getFirstTextColumn(): TableColumn | undefined {
+    return this.columns.find(col => !col.type || col.type === 'text');
+  }
+
+  getNumericColumns(): TableColumn[] {
+    return this.columns.filter(col => 
+      col.type !== 'avatar' && 
+      col.type !== 'badge' && 
+      col.type !== 'date' && 
+      col.type !== 'text' &&
+      col.key !== 'name' &&
+      col.key !== 'owner' &&
+      col.key !== 'email'
+    );
+  }
+
+  getDetailColumns(): TableColumn[] {
+    return this.columns.filter(col => 
+      col.type !== 'avatar' && 
+      col.key !== 'status' &&
+      !this.getNumericColumns().includes(col) &&
+      col.key !== 'name' &&
+      col.key !== 'owner' &&
+      col.key !== 'email'
+    );
   }
 
   get pageNumbers(): number[] {

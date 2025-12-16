@@ -54,9 +54,13 @@ export class SubscriptionBilling implements OnInit {
   
   filterPlan = 'all';
   filterStatus = 'all';
+  showMobileFilters = false;
   
   loading = signal(false);
   plansLoading = signal(false);
+
+  // Mobile detection
+  isMobile = false;
 
   // Stats
   totalRevenue = 45690;
@@ -120,9 +124,25 @@ export class SubscriptionBilling implements OnInit {
   };
 
   ngOnInit(): void {
+    this.checkMobile();
     this.loadPricingPlans();
     this.loadSubscriptions();
     this.loadTransactions();
+
+    // Listen for window resize
+    window.addEventListener('resize', () => this.checkMobile());
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', () => this.checkMobile());
+  }
+
+  checkMobile(): void {
+    this.isMobile = window.innerWidth < 1024;
+  }
+
+  toggleMobileFilters(): void {
+    this.showMobileFilters = !this.showMobileFilters;
   }
 
   loadPricingPlans(): void {
@@ -143,7 +163,6 @@ export class SubscriptionBilling implements OnInit {
   loadSubscriptions(): void {
     this.loading.set(true);
     
-    // Mock data - replace with actual service call when available
     const subs: Subscription[] = [
       {
         id: 1,
@@ -293,7 +312,6 @@ export class SubscriptionBilling implements OnInit {
     this.transactionPagination.currentPage = page;
   }
 
-  // Plan Management Methods
   openCreatePlanOffcanvas(): void {
     this.selectedPlan = null;
     this.isEditMode = false;
@@ -316,7 +334,6 @@ export class SubscriptionBilling implements OnInit {
     const currentPlans = this.pricingPlans();
     
     if (this.isEditMode && this.selectedPlan && this.selectedPlan.id) {
-      // Update existing plan
       this.pricingPlansService.updatePlan({ 
         ...plan, 
         id: this.selectedPlan.id, 
@@ -337,7 +354,6 @@ export class SubscriptionBilling implements OnInit {
         }
       });
     } else {
-      // Create new plan
       const maxId = currentPlans.length > 0 
         ? Math.max(...currentPlans.map(p => p.id || 0)) 
         : 0;

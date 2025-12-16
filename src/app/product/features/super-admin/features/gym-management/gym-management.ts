@@ -244,10 +244,6 @@ export class GymManagement implements OnInit {
     this.isFormOpen.set(true);
   }
 
-  viewGym(gym: Gym): void {
-    console.log('View gym:', gym);
-  }
-
   suspendGym(gym: Gym): void {
     if (confirm(`Are you sure you want to suspend ${gym.name}?`)) {
       gym.status = 'Suspended';
