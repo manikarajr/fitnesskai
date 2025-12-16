@@ -23,8 +23,8 @@
     </div>
   </div>
 
-  <!-- Stats Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+  <!-- Stats Grid - Mobile: 2 per row, Tablet+: 4 per row -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
     <app-stats-card
       label="Total Gyms"
       [value]="stats.totalGyms"
@@ -88,7 +88,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
       <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">Quick Stats</h2>
       
-      <div class="space-y-3 sm:space-y-4">
+      <div class="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
         <div class="flex items-center justify-between p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
           <div class="min-w-0 flex-1">
             <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Pending Approvals</p>

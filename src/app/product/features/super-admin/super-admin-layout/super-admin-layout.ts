@@ -24,11 +24,11 @@ userName = 'Super Admin';
       route: '/super-admin/gyms',
       icon: 'building'
     },
-    {
-      label: 'Gym Admins',
-      route: '/super-admin/users/admins',
-      icon: 'users'
-    },
+    // {
+    //   label: 'Gym Admins',
+    //   route: '/super-admin/users/admins',
+    //   icon: 'users'
+    // },
     {
       label: 'Trainers',
       route: '/super-admin/users/trainers',
