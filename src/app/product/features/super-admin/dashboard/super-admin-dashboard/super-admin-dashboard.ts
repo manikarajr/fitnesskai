@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatsCard } from '../../../../shared/components/stats-card/stats-card';
-import { DataTable, PaginationData, TableAction, TableColumn } from '../../../../shared/components/data-table/data-table';
+import { DataTable, TableAction, TableColumn } from '../../../../shared/components/data-table/data-table';
 
 interface DashboardStats {
   totalGyms: number;
@@ -39,6 +39,13 @@ interface TopGym {
   styleUrl: './super-admin-dashboard.scss'
 })
 export class SuperAdminDashboard implements OnInit {
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  paginationConfig = {
+    enabled: true,
+    itemsPerPage: 5  // Show 5 items per page for both tables
+  };
+
   stats: DashboardStats = {
     totalGyms: 156,
     totalMembers: 12847,
@@ -77,124 +84,167 @@ export class SuperAdminDashboard implements OnInit {
     }
   ];
 
-  activityPagination: PaginationData = {
-    currentPage: 1,
-    totalPages: 3,
-    totalItems: 25,
-    itemsPerPage: 10
-  };
-
-  // Add pagination for gyms
-  gymPagination: PaginationData = {
-    currentPage: 1,
-    totalPages: 2,
-    totalItems: 10,
-    itemsPerPage: 5
-  };
-
-  loading = false;
+  loading = true;
 
   ngOnInit(): void {
-    this.loadRecentActivities();
-    this.loadTopGyms();
+    this.loadDashboardData();
   }
 
-  loadRecentActivities(): void {
-    this.recentActivities = [
-      {
-        id: 1,
-        type: 'New Gym',
-        description: 'FitZone Downtown registered',
-        timestamp: new Date('2024-11-29T10:30:00'),
-        status: 'Pending'
-      },
-      {
-        id: 2,
-        type: 'Payment',
-        description: 'PowerHouse Gym renewed subscription',
-        timestamp: new Date('2024-11-29T09:15:00'),
-        status: 'Success'
-      },
-      {
-        id: 3,
-        type: 'Support',
-        description: 'Elite Fitness raised a support ticket',
-        timestamp: new Date('2024-11-29T08:45:00'),
-        status: 'Active'
-      },
-      {
-        id: 4,
-        type: 'Upgrade',
-        description: 'Metro Gym upgraded to Professional',
-        timestamp: new Date('2024-11-28T16:20:00'),
-        status: 'Success'
-      },
-      {
-        id: 5,
-        type: 'New Gym',
-        description: 'CrossFit Arena submitted application',
-        timestamp: new Date('2024-11-28T14:10:00'),
-        status: 'Approved'
-      }
-    ];
-  }
+  loadDashboardData(): void {
+    this.loading = true;
 
-  loadTopGyms(): void {
-    this.topGyms = [
-      {
-        id: 1,
-        name: 'PowerHouse Gym',
-        members: 842,
-        revenue: 6890,
-        plan: 'Professional',
-        status: 'Active'
-      },
-      {
-        id: 2,
-        name: 'FitZone Central',
-        members: 756,
-        revenue: 5240,
-        plan: 'Enterprise',
-        status: 'Active'
-      },
-      {
-        id: 3,
-        name: 'Elite Fitness',
-        members: 623,
-        revenue: 4950,
-        plan: 'Professional',
-        status: 'Active'
-      },
-      {
-        id: 4,
-        name: 'Metro Gym',
-        members: 512,
-        revenue: 3890,
-        plan: 'Professional',
-        status: 'Active'
-      },
-      {
-        id: 5,
-        name: 'Iron Paradise',
-        members: 489,
-        revenue: 3120,
-        plan: 'Starter',
-        status: 'Active'
-      }
-    ];
+    // Simulate API call
+    setTimeout(() => {
+      this.recentActivities = [
+        {
+          id: 1,
+          type: 'New Gym',
+          description: 'FitZone Downtown registered',
+          timestamp: new Date('2024-12-18T10:30:00'),
+          status: 'Pending'
+        },
+        {
+          id: 2,
+          type: 'Payment',
+          description: 'PowerHouse Gym renewed subscription',
+          timestamp: new Date('2024-12-18T09:15:00'),
+          status: 'Success'
+        },
+        {
+          id: 3,
+          type: 'Support',
+          description: 'Elite Fitness raised a support ticket',
+          timestamp: new Date('2024-12-18T08:45:00'),
+          status: 'Active'
+        },
+        {
+          id: 4,
+          type: 'Upgrade',
+          description: 'Metro Gym upgraded to Professional',
+          timestamp: new Date('2024-12-17T16:20:00'),
+          status: 'Success'
+        },
+        {
+          id: 5,
+          type: 'New Gym',
+          description: 'CrossFit Arena submitted application',
+          timestamp: new Date('2024-12-17T14:10:00'),
+          status: 'Approved'
+        },
+        {
+          id: 6,
+          type: 'Payment',
+          description: 'FitLife Center monthly payment received',
+          timestamp: new Date('2024-12-17T11:30:00'),
+          status: 'Success'
+        },
+        {
+          id: 7,
+          type: 'Support',
+          description: 'Iron Paradise requested feature',
+          timestamp: new Date('2024-12-16T15:45:00'),
+          status: 'Active'
+        },
+        {
+          id: 8,
+          type: 'New Gym',
+          description: 'Muscle Factory applied for membership',
+          timestamp: new Date('2024-12-16T13:20:00'),
+          status: 'Pending'
+        }
+      ];
+
+      this.topGyms = [
+        {
+          id: 1,
+          name: 'PowerHouse Gym',
+          members: 842,
+          revenue: 6890,
+          plan: 'Professional',
+          status: 'Active'
+        },
+        {
+          id: 2,
+          name: 'FitZone Central',
+          members: 756,
+          revenue: 5240,
+          plan: 'Enterprise',
+          status: 'Active'
+        },
+        {
+          id: 3,
+          name: 'Elite Fitness',
+          members: 623,
+          revenue: 4950,
+          plan: 'Professional',
+          status: 'Active'
+        },
+        {
+          id: 4,
+          name: 'Metro Gym',
+          members: 512,
+          revenue: 3890,
+          plan: 'Professional',
+          status: 'Active'
+        },
+        {
+          id: 5,
+          name: 'Iron Paradise',
+          members: 489,
+          revenue: 3120,
+          plan: 'Starter',
+          status: 'Active'
+        },
+        {
+          id: 6,
+          name: 'FitLife Center',
+          members: 445,
+          revenue: 2980,
+          plan: 'Starter',
+          status: 'Active'
+        },
+        {
+          id: 7,
+          name: 'CrossFit Arena',
+          members: 398,
+          revenue: 2560,
+          plan: 'Professional',
+          status: 'Active'
+        },
+        {
+          id: 8,
+          name: 'Muscle Factory',
+          members: 367,
+          revenue: 2340,
+          plan: 'Starter',
+          status: 'Pending'
+        }
+      ];
+
+      this.loading = false;
+      
+      // Manually trigger change detection
+      this.cdr.detectChanges();
+      
+      console.log('Data loaded:', {
+        activities: this.recentActivities.length,
+        gyms: this.topGyms.length
+      });
+    }, 800);
   }
 
   onActivityPageChange(page: number): void {
-    this.activityPagination.currentPage = page;
-    this.loadRecentActivities();
+    console.log('Activity page changed to:', page);
+    // You can add additional logic here if needed
   }
 
   onGymPageChange(page: number): void {
-    this.gymPagination.currentPage = page;
-    this.loadTopGyms();
+    console.log('Gym page changed to:', page);
+    // You can add additional logic here if needed
   }
 
   viewGym(gym: TopGym): void {
     console.log('View gym:', gym);
+    // Implement navigation or modal opening logic here
   }
 }

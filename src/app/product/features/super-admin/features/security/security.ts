@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DataTable, PaginationData, TableAction, TableColumn } from '../../../../shared/components/data-table/data-table';
-
+import { DataTable, PaginationConfig, TableAction, TableColumn } from '../../../../shared/components/data-table/data-table';
 
 interface SecurityLog {
   id: string;
@@ -25,6 +24,11 @@ interface SecurityStats {
   suspiciousActivity: number;
 }
 
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-security',
   standalone: true,
@@ -33,12 +37,104 @@ interface SecurityStats {
   styleUrl: './security.scss',
 })
 export class Security implements OnInit, OnDestroy {
+  // Signals for reactive state management
+  allLogs = signal<SecurityLog[]>([]);
+  searchQuery = signal<string>('');
+  selectedEventType = signal<string>('all');
+  selectedStatus = signal<string>('all');
+  selectedSeverity = signal<string>('all');
+  dateRange = signal<string>('today');
+  loading = signal<boolean>(false);
+  currentPage = signal<number>(1);
+  stats = signal<SecurityStats>({
+    loginAttempts: 0,
+    failedLogins: 0,
+    blockedIps: 0,
+    suspiciousActivity: 0
+  });
+
+  // Computed filtered logs based on all filter signals
+  filteredLogs = computed(() => {
+    let filtered = [...this.allLogs()];
+    const query = this.searchQuery().trim().toLowerCase();
+    const eventType = this.selectedEventType();
+    const status = this.selectedStatus();
+    const severity = this.selectedSeverity();
+    const range = this.dateRange();
+
+    // Search filter
+    if (query) {
+      filtered = filtered.filter(log =>
+        log.user.toLowerCase().includes(query) ||
+        log.email.toLowerCase().includes(query) ||
+        log.ipAddress.toLowerCase().includes(query) ||
+        log.eventType.toLowerCase().includes(query) ||
+        log.details.toLowerCase().includes(query)
+      );
+    }
+
+    // Event type filter
+    if (eventType !== 'all') {
+      filtered = filtered.filter(log => log.eventType === eventType);
+    }
+
+    // Status filter
+    if (status !== 'all') {
+      filtered = filtered.filter(log => log.status === status);
+    }
+
+    // Severity filter
+    if (severity !== 'all') {
+      filtered = filtered.filter(log => log.severity === severity);
+    }
+
+    // Date range filter
+    const now = Date.now();
+    if (range === 'today') {
+      const todayStart = new Date().setHours(0, 0, 0, 0);
+      filtered = filtered.filter(log => log.timestamp.getTime() >= todayStart);
+    } else if (range === 'yesterday') {
+      const yesterdayStart = new Date(now - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0);
+      const yesterdayEnd = new Date(now - 24 * 60 * 60 * 1000).setHours(23, 59, 59, 999);
+      filtered = filtered.filter(log =>
+        log.timestamp.getTime() >= yesterdayStart && log.timestamp.getTime() <= yesterdayEnd
+      );
+    } else if (range === 'week') {
+      const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+      filtered = filtered.filter(log => log.timestamp.getTime() >= weekAgo);
+    } else if (range === 'month') {
+      const monthAgo = now - 30 * 24 * 60 * 60 * 1000;
+      filtered = filtered.filter(log => log.timestamp.getTime() >= monthAgo);
+    }
+
+    return filtered;
+  });
+
+  // Computed recent critical events
+  recentCriticalEvents = computed(() => {
+    return this.allLogs()
+      .filter(log => log.severity === 'high' || log.severity === 'critical')
+      .slice(0, 5);
+  });
+
+  // Computed active filters count
+  hasActiveFilters = computed(() => {
+    return this.searchQuery() !== '' ||
+      this.selectedEventType() !== 'all' ||
+      this.selectedStatus() !== 'all' ||
+      this.selectedSeverity() !== 'all' ||
+      this.dateRange() !== 'today';
+  });
+
   // Table configuration
   columns: TableColumn[] = [
     { key: 'timestamp', label: 'Timestamp', sortable: true, type: 'date' },
     { key: 'eventType', label: 'Event Type', sortable: true, type: 'badge' },
     { key: 'user', label: 'User', sortable: true, type: 'text' },
+    { key: 'email', label: 'Email', sortable: true, type: 'text' },
+    { key: 'ipAddress', label: 'IP Address', sortable: true, type: 'text' },
     { key: 'status', label: 'Status', sortable: true, type: 'badge' },
+    { key: 'severity', label: 'Severity', sortable: true, type: 'badge' },
     { key: 'details', label: 'Details', sortable: false, type: 'text' }
   ];
 
@@ -57,19 +153,13 @@ export class Security implements OnInit, OnDestroy {
     }
   ];
 
-  // Data
-  allLogs: SecurityLog[] = [];
-  filteredLogs: SecurityLog[] = [];
-  displayedLogs: SecurityLog[] = [];
-  
-  // Filters
-  searchQuery: string = '';
-  selectedEventType: string = 'all';
-  selectedStatus: string = 'all';
-  selectedSeverity: string = 'all';
-  dateRange: string = 'today';
+  paginationConfig: PaginationConfig = {
+    enabled: true,
+    itemsPerPage: 6
+  };
 
-  eventTypes = [
+  // Filter options
+  eventTypes: FilterOption[] = [
     { value: 'all', label: 'All Events' },
     { value: 'Login', label: 'Login' },
     { value: 'Logout', label: 'Logout' },
@@ -81,7 +171,7 @@ export class Security implements OnInit, OnDestroy {
     { value: 'Settings Change', label: 'Settings Change' }
   ];
 
-  statusOptions = [
+  statusOptions: FilterOption[] = [
     { value: 'all', label: 'All Status' },
     { value: 'Success', label: 'Success' },
     { value: 'Failed', label: 'Failed' },
@@ -89,7 +179,7 @@ export class Security implements OnInit, OnDestroy {
     { value: 'Pending', label: 'Pending' }
   ];
 
-  severityOptions = [
+  severityOptions: FilterOption[] = [
     { value: 'all', label: 'All Severity' },
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
@@ -97,7 +187,7 @@ export class Security implements OnInit, OnDestroy {
     { value: 'critical', label: 'Critical' }
   ];
 
-  dateRanges = [
+  dateRanges: FilterOption[] = [
     { value: 'today', label: 'Today' },
     { value: 'yesterday', label: 'Yesterday' },
     { value: 'week', label: 'Last 7 Days' },
@@ -105,31 +195,19 @@ export class Security implements OnInit, OnDestroy {
     { value: 'all', label: 'All Time' }
   ];
 
-  // Stats
-  stats: SecurityStats = {
-    loginAttempts: 0,
-    failedLogins: 0,
-    blockedIps: 0,
-    suspiciousActivity: 0
-  };
-
-  // Pagination
-  pagination: PaginationData = {
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    itemsPerPage: 10
-  };
-
-  // Loading state
-  loading = false;
-
   // Real-time simulation
   private updateInterval: any;
 
+  constructor() {
+    // Effect to recalculate stats when logs change
+    effect(() => {
+      const logs = this.allLogs();
+      this.calculateStats(logs);
+    });
+  }
+
   ngOnInit(): void {
     this.generateMockData();
-    this.applyFilters();
     this.startRealTimeUpdates();
   }
 
@@ -149,27 +227,26 @@ export class Security implements OnInit, OnDestroy {
       { name: 'Unknown User', email: 'unknown@email.com' }
     ];
 
-    const eventTypes = ['Login', 'Logout', 'Failed Login', 'Password Change', 'Account Update', 'IP Blocked', 'Data Export', 'Settings Change'];
-    const statuses = ['Success', 'Failed', 'Blocked', 'Pending'];
-    const severities: ('low' | 'medium' | 'high' | 'critical')[] = ['low', 'medium', 'high', 'critical'];
+    const eventTypesList = ['Login', 'Logout', 'Failed Login', 'Password Change', 'Account Update', 'IP Blocked', 'Data Export', 'Settings Change'];
     const devices = ['Chrome on Windows', 'Safari on MacOS', 'Firefox on Linux', 'Mobile App - iOS', 'Mobile App - Android'];
     const locations = ['New York, US', 'London, UK', 'Tokyo, Japan', 'Sydney, Australia', 'Mumbai, India', 'Unknown Location'];
 
-    this.allLogs = Array.from({ length: 150 }, (_, i) => {
+    const logs: SecurityLog[] = Array.from({ length: 150 }, (_, i) => {
       const user = users[Math.floor(Math.random() * users.length)];
-      const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-      const status = eventType === 'Failed Login' || eventType === 'IP Blocked' 
+      const eventType = eventTypesList[Math.floor(Math.random() * eventTypesList.length)];
+      const status = eventType === 'Failed Login' || eventType === 'IP Blocked'
         ? (Math.random() > 0.5 ? 'Failed' : 'Blocked')
         : (Math.random() > 0.8 ? 'Pending' : 'Success');
-      
-      const severity = eventType === 'IP Blocked' ? 'critical' 
+
+      const severity: 'low' | 'medium' | 'high' | 'critical' = 
+        eventType === 'IP Blocked' ? 'critical'
         : eventType === 'Failed Login' ? 'high'
         : eventType === 'Password Change' ? 'medium'
         : 'low';
 
       const hoursAgo = Math.floor(Math.random() * 72);
       const minutesAgo = Math.floor(Math.random() * 60);
-      
+
       return {
         id: `LOG-${1000 + i}`,
         timestamp: new Date(Date.now() - (hoursAgo * 60 * 60 * 1000) - (minutesAgo * 60 * 1000)),
@@ -186,9 +263,9 @@ export class Security implements OnInit, OnDestroy {
     });
 
     // Sort by timestamp (newest first)
-    this.allLogs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-
-    this.calculateStats();
+    logs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    
+    this.allLogs.set(logs);
   }
 
   generateDetails(eventType: string, status: string): string {
@@ -207,98 +284,85 @@ export class Security implements OnInit, OnDestroy {
     return eventDetails[Math.floor(Math.random() * eventDetails.length)];
   }
 
-  calculateStats(): void {
+  calculateStats(logs: SecurityLog[]): void {
     const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const recentLogs = this.allLogs.filter(log => log.timestamp >= last24Hours);
+    const recentLogs = logs.filter(log => log.timestamp >= last24Hours);
 
-    this.stats = {
+    this.stats.set({
       loginAttempts: recentLogs.filter(log => log.eventType === 'Login' || log.eventType === 'Failed Login').length,
       failedLogins: recentLogs.filter(log => log.eventType === 'Failed Login').length,
       blockedIps: recentLogs.filter(log => log.status === 'Blocked').length,
       suspiciousActivity: recentLogs.filter(log => log.severity === 'high' || log.severity === 'critical').length
-    };
+    });
   }
 
-  applyFilters(): void {
-    this.loading = true;
-
-    setTimeout(() => {
-      let filtered = [...this.allLogs];
-
-      // Search filter
-      if (this.searchQuery.trim()) {
-        const query = this.searchQuery.toLowerCase();
-        filtered = filtered.filter(log => 
-          log.user.toLowerCase().includes(query) ||
-          log.email.toLowerCase().includes(query) ||
-          log.ipAddress.toLowerCase().includes(query) ||
-          log.eventType.toLowerCase().includes(query) ||
-          log.details.toLowerCase().includes(query)
-        );
-      }
-
-      // Event type filter
-      if (this.selectedEventType !== 'all') {
-        filtered = filtered.filter(log => log.eventType === this.selectedEventType);
-      }
-
-      // Status filter
-      if (this.selectedStatus !== 'all') {
-        filtered = filtered.filter(log => log.status === this.selectedStatus);
-      }
-
-      // Severity filter
-      if (this.selectedSeverity !== 'all') {
-        filtered = filtered.filter(log => log.severity === this.selectedSeverity);
-      }
-
-      // Date range filter
-      const now = Date.now();
-      if (this.dateRange === 'today') {
-        const todayStart = new Date().setHours(0, 0, 0, 0);
-        filtered = filtered.filter(log => log.timestamp.getTime() >= todayStart);
-      } else if (this.dateRange === 'yesterday') {
-        const yesterdayStart = new Date(now - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0);
-        const yesterdayEnd = new Date(now - 24 * 60 * 60 * 1000).setHours(23, 59, 59, 999);
-        filtered = filtered.filter(log => 
-          log.timestamp.getTime() >= yesterdayStart && log.timestamp.getTime() <= yesterdayEnd
-        );
-      } else if (this.dateRange === 'week') {
-        const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
-        filtered = filtered.filter(log => log.timestamp.getTime() >= weekAgo);
-      } else if (this.dateRange === 'month') {
-        const monthAgo = now - 30 * 24 * 60 * 60 * 1000;
-        filtered = filtered.filter(log => log.timestamp.getTime() >= monthAgo);
-      }
-
-      this.filteredLogs = filtered;
-      this.pagination.totalItems = filtered.length;
-      this.pagination.totalPages = Math.ceil(filtered.length / this.pagination.itemsPerPage);
-      this.pagination.currentPage = 1;
-      
-      this.updateDisplayedLogs();
-      this.loading = false;
-    }, 300);
+  // Filter update methods
+  updateSearchQuery(value: string): void {
+    this.searchQuery.set(value);
+    this.currentPage.set(1);
   }
 
-  updateDisplayedLogs(): void {
-    const startIndex = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage;
-    const endIndex = startIndex + this.pagination.itemsPerPage;
-    this.displayedLogs = this.filteredLogs.slice(startIndex, endIndex);
+  updateEventType(value: string): void {
+    this.selectedEventType.set(value);
+    this.currentPage.set(1);
+  }
+
+  updateStatus(value: string): void {
+    this.selectedStatus.set(value);
+    this.currentPage.set(1);
+  }
+
+  updateSeverity(value: string): void {
+    this.selectedSeverity.set(value);
+    this.currentPage.set(1);
+  }
+
+  updateDateRange(value: string): void {
+    this.dateRange.set(value);
+    this.currentPage.set(1);
+  }
+
+  clearFilters(): void {
+    this.searchQuery.set('');
+    this.selectedEventType.set('all');
+    this.selectedStatus.set('all');
+    this.selectedSeverity.set('all');
+    this.dateRange.set('today');
+    this.currentPage.set(1);
+  }
+
+  clearIndividualFilter(filterType: 'search' | 'eventType' | 'status' | 'severity' | 'dateRange'): void {
+    switch (filterType) {
+      case 'search':
+        this.searchQuery.set('');
+        break;
+      case 'eventType':
+        this.selectedEventType.set('all');
+        break;
+      case 'status':
+        this.selectedStatus.set('all');
+        break;
+      case 'severity':
+        this.selectedSeverity.set('all');
+        break;
+      case 'dateRange':
+        this.dateRange.set('today');
+        break;
+    }
+    this.currentPage.set(1);
   }
 
   onPageChange(page: number): void {
-    this.pagination.currentPage = page;
-    this.updateDisplayedLogs();
+    this.currentPage.set(page);
   }
 
   onSortChange(sort: { key: string; direction: 'asc' | 'desc' }): void {
-    this.filteredLogs.sort((a: any, b: any) => {
+    const sorted = [...this.filteredLogs()].sort((a: any, b: any) => {
       const aValue = a[sort.key];
       const bValue = b[sort.key];
 
       if (aValue instanceof Date && bValue instanceof Date) {
-        return sort.direction === 'asc' 
+        return sort.direction === 'asc'
           ? aValue.getTime() - bValue.getTime()
           : bValue.getTime() - aValue.getTime();
       }
@@ -312,16 +376,13 @@ export class Security implements OnInit, OnDestroy {
       return 0;
     });
 
-    this.updateDisplayedLogs();
-  }
-
-  clearFilters(): void {
-    this.searchQuery = '';
-    this.selectedEventType = 'all';
-    this.selectedStatus = 'all';
-    this.selectedSeverity = 'all';
-    this.dateRange = 'today';
-    this.applyFilters();
+    // Update the allLogs signal with sorted data
+    // Note: This maintains the filter but applies the sort
+    this.allLogs.update(logs => {
+      const filteredIds = new Set(sorted.map(log => log.id));
+      const nonFiltered = logs.filter(log => !filteredIds.has(log.id));
+      return [...sorted, ...nonFiltered];
+    });
   }
 
   viewDetails(log: SecurityLog): void {
@@ -341,10 +402,14 @@ export class Security implements OnInit, OnDestroy {
 
   blockIP(log: SecurityLog): void {
     if (confirm(`Are you sure you want to block IP address ${log.ipAddress}?`)) {
-      // Simulate blocking IP
       console.log(`Blocking IP: ${log.ipAddress}`);
-      this.stats.blockedIps++;
       
+      // Update stats
+      this.stats.update(current => ({
+        ...current,
+        blockedIps: current.blockedIps + 1
+      }));
+
       // Add new blocked IP log
       const newLog: SecurityLog = {
         id: `LOG-${Date.now()}`,
@@ -360,27 +425,23 @@ export class Security implements OnInit, OnDestroy {
         severity: 'critical'
       };
 
-      this.allLogs.unshift(newLog);
-      this.applyFilters();
+      this.allLogs.update(logs => [newLog, ...logs]);
     }
   }
 
   exportLogs(): void {
-    console.log('Exporting logs...', this.filteredLogs);
-    alert(`Exporting ${this.filteredLogs.length} security logs to CSV...`);
+    const logsToExport = this.filteredLogs();
+    console.log('Exporting logs...', logsToExport);
+    alert(`Exporting ${logsToExport.length} security logs to CSV...`);
   }
 
   startRealTimeUpdates(): void {
     // Simulate real-time log updates every 10 seconds
     this.updateInterval = setInterval(() => {
       const shouldAddLog = Math.random() > 0.5;
-      
+
       if (shouldAddLog) {
         this.addRealTimeLog();
-        this.calculateStats();
-        if (this.dateRange === 'today' || this.dateRange === 'all') {
-          this.applyFilters();
-        }
       }
     }, 10000);
   }
@@ -392,10 +453,10 @@ export class Security implements OnInit, OnDestroy {
       { name: 'Mike Davis', email: 'mike@powerhouse.com' }
     ];
 
-    const eventTypes = ['Login', 'Logout', 'Failed Login', 'Account Update'];
+    const eventTypesList = ['Login', 'Logout', 'Failed Login', 'Account Update'];
     const user = users[Math.floor(Math.random() * users.length)];
-    const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-    
+    const eventType = eventTypesList[Math.floor(Math.random() * eventTypesList.length)];
+
     const newLog: SecurityLog = {
       id: `LOG-${Date.now()}`,
       timestamp: new Date(),
@@ -410,7 +471,7 @@ export class Security implements OnInit, OnDestroy {
       severity: eventType === 'Failed Login' ? 'high' : 'low'
     };
 
-    this.allLogs.unshift(newLog);
+    this.allLogs.update(logs => [newLog, ...logs]);
   }
 
   getSeverityBadgeClass(severity: string): string {
@@ -429,18 +490,18 @@ export class Security implements OnInit, OnDestroy {
   }
 
   getEventTypeLabel(): string {
-    return this.eventTypes.find(e => e.value === this.selectedEventType)?.label || '';
+    return this.eventTypes.find(e => e.value === this.selectedEventType())?.label || '';
   }
 
   getStatusLabel(): string {
-    return this.statusOptions.find(s => s.value === this.selectedStatus)?.label || '';
+    return this.statusOptions.find(s => s.value === this.selectedStatus())?.label || '';
   }
 
   getSeverityLabel(): string {
-    return this.severityOptions.find(s => s.value === this.selectedSeverity)?.label || '';
+    return this.severityOptions.find(s => s.value === this.selectedSeverity())?.label || '';
   }
 
   getDateRangeLabel(): string {
-    return this.dateRanges.find(d => d.value === this.dateRange)?.label || '';
+    return this.dateRanges.find(d => d.value === this.dateRange())?.label || '';
   }
 }

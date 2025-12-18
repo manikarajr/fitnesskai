@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface TableColumn {
@@ -16,11 +16,9 @@ export interface TableAction {
   action: (row: any) => void;
 }
 
-export interface PaginationData {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
+export interface PaginationConfig {
+  enabled: boolean;
+  itemsPerPage?: number;
 }
 
 @Component({
@@ -30,11 +28,11 @@ export interface PaginationData {
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss'
 })
-export class DataTable {
+export class DataTable implements OnInit, OnChanges {
   @Input() columns: TableColumn[] = [];
   @Input() data: any[] = [];
   @Input() actions: TableAction[] = [];
-  @Input() pagination?: PaginationData;
+  @Input() paginationConfig: PaginationConfig = { enabled: true, itemsPerPage: 10 };
   @Input() loading = false;
   @Input() emptyMessage = 'No data available';
   @Input() selectable = false;
@@ -47,6 +45,51 @@ export class DataTable {
   sortKey: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
   Math = Math;
+  
+  // Pagination signals
+  currentPage = signal(1);
+  itemsPerPage = signal(10);
+  
+  // Computed paginated data
+  paginatedData = computed(() => {
+    if (!this.paginationConfig.enabled) {
+      return this.data;
+    }
+    
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
+    const endIndex = startIndex + this.itemsPerPage();
+    return this.data.slice(startIndex, endIndex);
+  });
+  
+  // Computed pagination info
+  paginationInfo = computed(() => {
+    const itemsPerPage = this.itemsPerPage();
+    const totalItems = this.data.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    
+    return {
+      currentPage: this.currentPage(),
+      totalPages: totalPages,
+      totalItems: totalItems,
+      itemsPerPage: itemsPerPage
+    };
+  });
+
+  ngOnInit(): void {
+    this.itemsPerPage.set(this.paginationConfig.itemsPerPage || 10);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Reset to page 1 when data changes
+    if (changes['data'] && !changes['data'].firstChange) {
+      this.currentPage.set(1);
+    }
+    
+    // Update items per page if config changes
+    if (changes['paginationConfig'] && this.paginationConfig.itemsPerPage) {
+      this.itemsPerPage.set(this.paginationConfig.itemsPerPage);
+    }
+  }
 
   toggleRowSelection(row: any): void {
     if (this.selectedRows.has(row)) {
@@ -58,10 +101,13 @@ export class DataTable {
   }
 
   toggleSelectAll(): void {
-    if (this.selectedRows.size === this.data.length) {
-      this.selectedRows.clear();
+    const currentPageData = this.paginatedData();
+    const allCurrentSelected = currentPageData.every(row => this.selectedRows.has(row));
+    
+    if (allCurrentSelected) {
+      currentPageData.forEach(row => this.selectedRows.delete(row));
     } else {
-      this.data.forEach(row => this.selectedRows.add(row));
+      currentPageData.forEach(row => this.selectedRows.add(row));
     }
     this.rowSelect.emit(Array.from(this.selectedRows));
   }
@@ -71,7 +117,8 @@ export class DataTable {
   }
 
   get allSelected(): boolean {
-    return this.data.length > 0 && this.selectedRows.size === this.data.length;
+    const currentPageData = this.paginatedData();
+    return currentPageData.length > 0 && currentPageData.every(row => this.selectedRows.has(row));
   }
 
   onSort(column: TableColumn): void {
@@ -88,6 +135,8 @@ export class DataTable {
   }
 
   onPageChange(page: number): void {
+    if (page < 1 || page > this.paginationInfo().totalPages) return;
+    this.currentPage.set(page);
     this.pageChange.emit(page);
   }
 
@@ -193,9 +242,8 @@ export class DataTable {
   }
 
   get pageNumbers(): number[] {
-    if (!this.pagination) return [];
-    
-    const { currentPage, totalPages } = this.pagination;
+    const info = this.paginationInfo();
+    const { currentPage, totalPages } = info;
     const delta = 2;
     const range: number[] = [];
     
@@ -219,12 +267,12 @@ export class DataTable {
   }
 
   getDisplayedItemsStart(): number {
-    if (!this.pagination) return 0;
-    return ((this.pagination.currentPage - 1) * this.pagination.itemsPerPage) + 1;
+    const info = this.paginationInfo();
+    return ((info.currentPage - 1) * info.itemsPerPage) + 1;
   }
 
   getDisplayedItemsEnd(): number {
-    if (!this.pagination) return 0;
-    return Math.min(this.pagination.currentPage * this.pagination.itemsPerPage, this.pagination.totalItems);
+    const info = this.paginationInfo();
+    return Math.min(info.currentPage * info.itemsPerPage, info.totalItems);
   }
 }

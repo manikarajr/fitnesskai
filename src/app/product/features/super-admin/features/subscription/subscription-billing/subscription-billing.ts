@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { DataTable, PaginationData, TableAction, TableColumn } from '../../../../../shared/components/data-table/data-table';
+import { DataTable, TableAction, TableColumn, PaginationConfig } from '../../../../../shared/components/data-table/data-table';
 import { StatsCard } from '../../../../../shared/components/stats-card/stats-card';
 import { OffcanvasPanel } from '../../../../../shared/components/offcanvas-panel/offcanvas-panel';
 import { SubscriptionPlanForm } from '../subscription-plan-form/subscription-plan-form';
@@ -52,9 +52,10 @@ export class SubscriptionBilling implements OnInit {
   subscriptions = signal<Subscription[]>([]);
   transactions = signal<Transaction[]>([]);
   
-  filterPlan = 'all';
-  filterStatus = 'all';
-  showMobileFilters = false;
+  // Filter signals
+  filterPlan = signal('all');
+  filterStatus = signal('all');
+  showMobileFilters = signal(false);
   
   loading = signal(false);
   plansLoading = signal(false);
@@ -109,19 +110,36 @@ export class SubscriptionBilling implements OnInit {
     }
   ];
 
-  subscriptionPagination: PaginationData = {
-    currentPage: 1,
-    totalPages: 5,
-    totalItems: 48,
-    itemsPerPage: 10
+  // Pagination configuration
+  paginationConfig: PaginationConfig = {
+    enabled: true,
+    itemsPerPage: 6
   };
 
-  transactionPagination: PaginationData = {
-    currentPage: 1,
-    totalPages: 8,
-    totalItems: 76,
-    itemsPerPage: 10
-  };
+  // Computed filtered subscriptions
+  filteredSubscriptions = computed(() => {
+    const plan = this.filterPlan();
+    const status = this.filterStatus();
+    
+    return this.subscriptions().filter(sub => {
+      const matchesPlan = plan === 'all' || 
+        sub.plan.toLowerCase() === plan.toLowerCase();
+      
+      const matchesStatus = status === 'all' || 
+        sub.status.toLowerCase() === status.toLowerCase();
+      
+      return matchesPlan && matchesStatus;
+    });
+  });
+
+  constructor() {
+    // Effect to reset stats when subscriptions change
+    effect(() => {
+      const subs = this.subscriptions();
+      // You can calculate dynamic stats here if needed
+      console.log('Subscriptions updated:', subs.length);
+    });
+  }
 
   ngOnInit(): void {
     this.checkMobile();
@@ -142,7 +160,7 @@ export class SubscriptionBilling implements OnInit {
   }
 
   toggleMobileFilters(): void {
-    this.showMobileFilters = !this.showMobileFilters;
+    this.showMobileFilters.update(value => !value);
   }
 
   loadPricingPlans(): void {
@@ -163,81 +181,84 @@ export class SubscriptionBilling implements OnInit {
   loadSubscriptions(): void {
     this.loading.set(true);
     
-    const subs: Subscription[] = [
-      {
-        id: 1,
-        gymName: 'PowerHouse Gym',
-        plan: 'Professional',
-        amount: 99,
-        billingCycle: 'Monthly',
-        status: 'Active',
-        nextBilling: new Date('2024-12-15'),
-        startDate: new Date('2024-01-15')
-      },
-      {
-        id: 2,
-        gymName: 'FitZone Central',
-        plan: 'Enterprise',
-        amount: 299,
-        billingCycle: 'Monthly',
-        status: 'Active',
-        nextBilling: new Date('2024-12-20'),
-        startDate: new Date('2024-02-20')
-      },
-      {
-        id: 3,
-        gymName: 'Elite Fitness',
-        plan: 'Professional',
-        amount: 79,
-        billingCycle: 'Yearly',
-        status: 'Active',
-        nextBilling: new Date('2025-11-10'),
-        startDate: new Date('2023-11-10')
-      },
-      {
-        id: 4,
-        gymName: 'Metro Gym',
-        plan: 'Professional',
-        amount: 99,
-        billingCycle: 'Monthly',
-        status: 'Active',
-        nextBilling: new Date('2024-12-05'),
-        startDate: new Date('2024-03-05')
-      },
-      {
-        id: 5,
-        gymName: 'Iron Paradise',
-        plan: 'Starter',
-        amount: 49,
-        billingCycle: 'Monthly',
-        status: 'Active',
-        nextBilling: new Date('2024-12-12'),
-        startDate: new Date('2024-04-12')
-      },
-      {
-        id: 6,
-        gymName: 'FitZone Downtown',
-        plan: 'Starter',
-        amount: 49,
-        billingCycle: 'Monthly',
-        status: 'Pending',
-        nextBilling: new Date('2024-12-28'),
-        startDate: new Date('2024-11-28')
-      },
-      {
-        id: 7,
-        gymName: 'CrossFit Arena',
-        plan: 'Professional',
-        amount: 99,
-        billingCycle: 'Monthly',
-        status: 'Failed',
-        nextBilling: new Date('2024-11-22'),
-        startDate: new Date('2023-09-22')
-      }
-    ];
-    
-    this.subscriptions.set(subs);
-    this.loading.set(false);
+    // Simulate API call - replace with actual service call
+    setTimeout(() => {
+      const subs: Subscription[] = [
+        {
+          id: 1,
+          gymName: 'PowerHouse Gym',
+          plan: 'Professional',
+          amount: 99,
+          billingCycle: 'Monthly',
+          status: 'Active',
+          nextBilling: new Date('2024-12-15'),
+          startDate: new Date('2024-01-15')
+        },
+        {
+          id: 2,
+          gymName: 'FitZone Central',
+          plan: 'Enterprise',
+          amount: 299,
+          billingCycle: 'Monthly',
+          status: 'Active',
+          nextBilling: new Date('2024-12-20'),
+          startDate: new Date('2024-02-20')
+        },
+        {
+          id: 3,
+          gymName: 'Elite Fitness',
+          plan: 'Professional',
+          amount: 79,
+          billingCycle: 'Yearly',
+          status: 'Active',
+          nextBilling: new Date('2025-11-10'),
+          startDate: new Date('2023-11-10')
+        },
+        {
+          id: 4,
+          gymName: 'Metro Gym',
+          plan: 'Professional',
+          amount: 99,
+          billingCycle: 'Monthly',
+          status: 'Active',
+          nextBilling: new Date('2024-12-05'),
+          startDate: new Date('2024-03-05')
+        },
+        {
+          id: 5,
+          gymName: 'Iron Paradise',
+          plan: 'Starter',
+          amount: 49,
+          billingCycle: 'Monthly',
+          status: 'Active',
+          nextBilling: new Date('2024-12-12'),
+          startDate: new Date('2024-04-12')
+        },
+        {
+          id: 6,
+          gymName: 'FitZone Downtown',
+          plan: 'Starter',
+          amount: 49,
+          billingCycle: 'Monthly',
+          status: 'Pending',
+          nextBilling: new Date('2024-12-28'),
+          startDate: new Date('2024-11-28')
+        },
+        {
+          id: 7,
+          gymName: 'CrossFit Arena',
+          plan: 'Professional',
+          amount: 99,
+          billingCycle: 'Monthly',
+          status: 'Failed',
+          nextBilling: new Date('2024-11-22'),
+          startDate: new Date('2023-09-22')
+        }
+      ];
+      
+      this.subscriptions.set(subs);
+      this.loading.set(false);
+    }, 500);
   }
 
   loadTransactions(): void {
@@ -305,11 +326,11 @@ export class SubscriptionBilling implements OnInit {
   }
 
   onSubscriptionPageChange(page: number): void {
-    this.subscriptionPagination.currentPage = page;
+    console.log('Subscription page changed to:', page);
   }
 
   onTransactionPageChange(page: number): void {
-    this.transactionPagination.currentPage = page;
+    console.log('Transaction page changed to:', page);
   }
 
   openCreatePlanOffcanvas(): void {

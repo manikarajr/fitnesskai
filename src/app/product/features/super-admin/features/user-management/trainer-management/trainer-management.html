@@ -1,8 +1,8 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe">
   
   <!-- Mobile Header -->
-  <div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800">
-    <div class="px-4 py-2 flex items-center justify-between">
+  <div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="px-4 py-3 flex items-center justify-between">
       
       <!-- Title -->
       <div>
@@ -10,7 +10,7 @@
           Trainer Management
         </h3>
         <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-          {{ filteredTrainers.length }} trainers
+          {{ filteredTrainers().length }} trainers
         </p>
       </div>
 
@@ -38,7 +38,9 @@
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Trainer Management</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage trainers across all gyms</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Manage trainers across all gyms · {{ filteredTrainers().length }} total
+          </p>
         </div>
         <button (click)="openAddTrainerPanel()"
                 class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md flex items-center space-x-2">
@@ -71,7 +73,7 @@
                 (change)="applyFilters()"
                 class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
           <option value="">All Gyms</option>
-          <option *ngFor="let gym of availableGyms" [value]="gym.id">{{ gym.name }}</option>
+          <option *ngFor="let gym of availableGyms()" [value]="gym.id">{{ gym.name }}</option>
         </select>
 
         <select [(ngModel)]="filters.status"
@@ -89,27 +91,28 @@
       </div>
     </div>
 
-    <!-- Data Table (handles both desktop and mobile) -->
+    <!-- Data Table -->
     <app-data-table
       [columns]="columns"
-      [data]="filteredTrainers"
+      [data]="filteredTrainers()"
       [actions]="tableActions"
-      [pagination]="pagination"
-      [loading]="loading"
+      [paginationConfig]="paginationConfig"
+      [loading]="loading()"
       [selectable]="true"
       emptyMessage="No trainers found"
       (pageChange)="onPageChange($event)"
-      (sortChange)="onSort($event)">
+      (sortChange)="onSort($event)"
+      (rowSelect)="onRowSelect($event)">
     </app-data-table>
   </div>
 
 </div>
 
-<!-- Form Modal -->
+<!-- Form Panel -->
 <app-offcanvas-panel
-  [isOpen]="isPanelOpen"
-  [title]="isEditMode ? 'Edit Trainer' : 'Add New Trainer'"
-  [subtitle]="isEditMode ? 'Update trainer information' : 'Create a new trainer profile'"
+  [isOpen]="isPanelOpen()"
+  [title]="isEditMode() ? 'Edit Trainer' : 'Add New Trainer'"
+  [subtitle]="isEditMode() ? 'Update trainer information' : 'Create a new trainer profile'"
   [size]="'lg'"
   (close)="closePanel()">
   
@@ -185,7 +188,7 @@
                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   [class.border-red-500]="trainerForm.get('gymId')?.invalid && trainerForm.get('gymId')?.touched">
             <option value="">Select Gym</option>
-            <option *ngFor="let gym of availableGyms" [value]="gym.id">{{ gym.name }}</option>
+            <option *ngFor="let gym of availableGyms()" [value]="gym.id">{{ gym.name }}</option>
           </select>
           <p *ngIf="trainerForm.get('gymId')?.invalid && trainerForm.get('gymId')?.touched" 
              class="mt-1.5 text-sm text-red-600 dark:text-red-400">
@@ -225,9 +228,16 @@
         Cancel
       </button>
       <button type="submit"
-              [disabled]="trainerForm.invalid || submitting"
+              [disabled]="trainerForm.invalid || submitting()"
               class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-        {{ isEditMode ? 'Update Trainer' : 'Add Trainer' }}
+        <span *ngIf="!submitting()">{{ isEditMode() ? 'Update Trainer' : 'Add Trainer' }}</span>
+        <span *ngIf="submitting()" class="flex items-center justify-center gap-2">
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        </span>
       </button>
     </div>
   </form>

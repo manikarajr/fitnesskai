@@ -234,7 +234,8 @@
     
     <!-- Desktop Filters -->
     <div class="hidden lg:flex items-center space-x-3">
-      <select [(ngModel)]="filterPlan"
+      <select [ngModel]="filterPlan()"
+              (ngModelChange)="filterPlan.set($event)"
               class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-shadow">
         <option value="all">All Plans</option>
         <option value="starter">Starter</option>
@@ -242,7 +243,8 @@
         <option value="enterprise">Enterprise</option>
       </select>
       
-      <select [(ngModel)]="filterStatus"
+      <select [ngModel]="filterStatus()"
+              (ngModelChange)="filterStatus.set($event)"
               class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-shadow">
         <option value="all">All Status</option>
         <option value="active">Active</option>
@@ -254,9 +256,9 @@
   
   <app-data-table
     [columns]="subscriptionColumns"
-    [data]="subscriptions()"
+    [data]="filteredSubscriptions()"
     [actions]="subscriptionActions"
-    [pagination]="subscriptionPagination"
+    [paginationConfig]="paginationConfig"
     [loading]="loading()"
     emptyMessage="No subscriptions found"
     (pageChange)="onSubscriptionPageChange($event)">
@@ -279,7 +281,7 @@
     [columns]="transactionColumns"
     [data]="transactions()"
     [actions]="transactionActions"
-    [pagination]="transactionPagination"
+    [paginationConfig]="paginationConfig"
     [loading]="loading()"
     emptyMessage="No transactions found"
     (pageChange)="onTransactionPageChange($event)">

@@ -8,7 +8,7 @@
   <!-- Mobile Card View -->
   <div *ngIf="!loading" class="block lg:hidden">
     <!-- Empty State -->
-    <div *ngIf="data.length === 0" class="text-center py-12">
+    <div *ngIf="paginatedData().length === 0" class="text-center py-12">
       <svg class="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
       </svg>
@@ -17,7 +17,7 @@
 
     <!-- Mobile Cards -->
     <div class="space-y-2.5 p-3">
-      <div *ngFor="let row of data" 
+      <div *ngFor="let row of paginatedData()" 
            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden active:scale-[0.98] transition-transform">
         
         <!-- Card Header with Avatar Column -->
@@ -159,7 +159,7 @@
       </thead>
 
       <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr *ngIf="data.length === 0">
+        <tr *ngIf="paginatedData().length === 0">
           <td [attr.colspan]="columns.length + (selectable ? 1 : 0) + (actions.length > 0 ? 1 : 0)" 
               class="px-6 py-12 text-center">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +169,7 @@
           </td>
         </tr>
 
-        <tr *ngFor="let row of data" 
+        <tr *ngFor="let row of paginatedData()" 
             class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             [class.bg-red-50]="isRowSelected(row)"
             [class.dark:bg-red-900/10]="isRowSelected(row)">
@@ -245,21 +245,21 @@
   </div>
 
   <!-- Pagination -->
-  <div *ngIf="pagination && data.length > 0" 
+  <div *ngIf="paginationConfig.enabled && data.length > 0" 
        class="bg-white dark:bg-gray-800 px-3 py-2.5 sm:px-6 sm:py-3 border-t border-gray-200 dark:border-gray-700">
     <div class="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3">
       <!-- Mobile Pagination -->
       <div class="flex w-full sm:hidden justify-between items-center">
-        <button (click)="onPageChange(pagination.currentPage - 1)"
-                [disabled]="pagination.currentPage === 1"
+        <button (click)="onPageChange(currentPage() - 1)"
+                [disabled]="currentPage() === 1"
                 class="px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 text-[11px] font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
           Previous
         </button>
         <span class="px-2 py-1 text-[11px] font-medium text-gray-700 dark:text-gray-300">
-          {{ pagination.currentPage }} / {{ pagination.totalPages }}
+          {{ currentPage() }} / {{ paginationInfo().totalPages }}
         </span>
-        <button (click)="onPageChange(pagination.currentPage + 1)"
-                [disabled]="pagination.currentPage === pagination.totalPages"
+        <button (click)="onPageChange(currentPage() + 1)"
+                [disabled]="currentPage() === paginationInfo().totalPages"
                 class="px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 text-[11px] font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
           Next
         </button>
@@ -274,15 +274,15 @@
             to
             <span class="font-medium">{{ getDisplayedItemsEnd() }}</span>
             of
-            <span class="font-medium">{{ pagination.totalItems }}</span>
+            <span class="font-medium">{{ paginationInfo().totalItems }}</span>
             results
           </p>
         </div>
         
         <div>
           <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            <button (click)="onPageChange(pagination.currentPage - 1)"
-                    [disabled]="pagination.currentPage === 1"
+            <button (click)="onPageChange(currentPage() - 1)"
+                    [disabled]="currentPage() === 1"
                     class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -292,18 +292,18 @@
             <button *ngFor="let page of pageNumbers"
                     (click)="page !== -1 && onPageChange(page)"
                     [disabled]="page === -1"
-                    [class.bg-red-50]="page === pagination.currentPage"
-                    [class.dark:bg-red-900/20]="page === pagination.currentPage"
-                    [class.text-red-600]="page === pagination.currentPage"
-                    [class.dark:text-red-400]="page === pagination.currentPage"
-                    [class.border-red-500]="page === pagination.currentPage"
-                    [class.dark:border-red-400]="page === pagination.currentPage"
+                    [class.bg-red-50]="page === currentPage()"
+                    [class.dark:bg-red-900/20]="page === currentPage()"
+                    [class.text-red-600]="page === currentPage()"
+                    [class.dark:text-red-400]="page === currentPage()"
+                    [class.border-red-500]="page === currentPage()"
+                    [class.dark:border-red-400]="page === currentPage()"
                     class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:cursor-default">
               {{ page === -1 ? '...' : page }}
             </button>
 
-            <button (click)="onPageChange(pagination.currentPage + 1)"
-                    [disabled]="pagination.currentPage === pagination.totalPages"
+            <button (click)="onPageChange(currentPage() + 1)"
+                    [disabled]="currentPage() === paginationInfo().totalPages"
                     class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

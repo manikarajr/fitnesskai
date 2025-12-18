@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-
 import { FormsModule } from '@angular/forms';
-import { DataTable, PaginationData, TableAction, TableColumn } from '../../../../../shared/components/data-table/data-table';
+import { DataTable, TableAction, TableColumn, PaginationConfig } from '../../../../../shared/components/data-table/data-table';
 import { OffcanvasPanel } from '../../../../../shared/components/offcanvas-panel/offcanvas-panel';
 
 interface Admin {
@@ -17,6 +16,8 @@ interface Admin {
   permissions: string[];
   createdAt: Date;
   lastLogin?: Date;
+  avatar?: string;
+  assignedGymsCount?: string;
 }
 
 interface Gym {
@@ -37,9 +38,56 @@ interface Permission {
   styleUrl: './admin-management.scss',
 })
 export class AdminManagement implements OnInit {
+  // Signals for reactive state
+  admins = signal<Admin[]>([]);
+  availableGyms = signal<Gym[]>([]);
+  loading = signal(false);
+  submitting = signal(false);
+  isPanelOpen = signal(false);
+  isEditMode = signal(false);
+  selectedAdmin = signal<Admin | null>(null);
+
+  // Filter signals
+  searchFilter = signal('');
+  statusFilter = signal('');
+  roleFilter = signal('');
+
+  // Computed filtered admins
+  filteredAdmins = computed(() => {
+    let filtered = [...this.admins()];
+
+    // Search filter
+    const search = this.searchFilter().toLowerCase();
+    if (search) {
+      filtered = filtered.filter(admin => 
+        admin.name.toLowerCase().includes(search) ||
+        admin.email.toLowerCase().includes(search)
+      );
+    }
+
+    // Status filter
+    const status = this.statusFilter();
+    if (status) {
+      filtered = filtered.filter(admin => admin.status === status);
+    }
+
+    // Role filter
+    const role = this.roleFilter();
+    if (role) {
+      filtered = filtered.filter(admin => admin.role === role);
+    }
+
+    // Add computed field for table
+    return filtered.map(admin => ({
+      ...admin,
+      assignedGymsCount: admin.role === 'super-admin' ? 'All' : admin.assignedGyms.length.toString()
+    }));
+  });
+
   // Table Configuration
   columns: TableColumn[] = [
-    { key: 'name', label: 'Name', sortable: true, type: 'avatar' },
+    { key: 'avatar', label: 'Avatar', type: 'avatar', width: '80px' },
+    { key: 'name', label: 'Name', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
     { key: 'role', label: 'Role', sortable: true, type: 'badge' },
     { key: 'assignedGymsCount', label: 'Gyms', sortable: true },
@@ -62,10 +110,12 @@ export class AdminManagement implements OnInit {
     }
   ];
 
-  // Data
-  admins: Admin[] = [];
-  filteredAdmins: Admin[] = [];
-  availableGyms: Gym[] = [];
+  paginationConfig: PaginationConfig = {
+    enabled: true,
+    itemsPerPage: 10
+  };
+
+  // Available permissions
   availablePermissions: Permission[] = [
     { key: 'manage_members', label: 'Manage Members' },
     { key: 'manage_trainers', label: 'Manage Trainers' },
@@ -75,32 +125,10 @@ export class AdminManagement implements OnInit {
     { key: 'manage_equipment', label: 'Manage Equipment' },
   ];
 
-  // State
-  loading = false;
-  submitting = false;
-  isPanelOpen = false;
-  isEditMode = false;
-  selectedAdmin: Admin | null = null;
-
   // Form
   adminForm!: FormGroup;
   selectedGyms: Set<string> = new Set();
   selectedPermissions: Set<string> = new Set();
-
-  // Filters
-  filters = {
-    search: '',
-    status: '',
-    role: ''
-  };
-
-  // Pagination
-  pagination: PaginationData = {
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    itemsPerPage: 10
-  };
 
   constructor(private fb: FormBuilder) {
     this.initForm();
@@ -108,7 +136,6 @@ export class AdminManagement implements OnInit {
 
   ngOnInit(): void {
     this.loadMockData();
-    this.applyFilters();
   }
 
   initForm(): void {
@@ -122,19 +149,19 @@ export class AdminManagement implements OnInit {
   }
 
   loadMockData(): void {
-    this.loading = true;
+    this.loading.set(true);
     
     // Mock gyms
-    this.availableGyms = [
+    this.availableGyms.set([
       { id: 'gym-1', name: 'Downtown Fitness Center' },
       { id: 'gym-2', name: 'Westside Gym' },
       { id: 'gym-3', name: 'East Valley Sports Club' },
       { id: 'gym-4', name: 'North Peak Fitness' },
       { id: 'gym-5', name: 'South Bay Wellness' }
-    ];
+    ]);
 
     // Mock admins
-    this.admins = [
+    const mockAdmins: Admin[] = [
       {
         id: '1',
         name: 'John Smith',
@@ -145,7 +172,8 @@ export class AdminManagement implements OnInit {
         assignedGyms: ['gym-1', 'gym-2'],
         permissions: ['manage_members', 'manage_trainers', 'view_reports'],
         createdAt: new Date('2024-01-15'),
-        lastLogin: new Date('2024-12-14')
+        lastLogin: new Date('2024-12-14'),
+        avatar: 'https://ui-avatars.com/api/?name=John+Smith&background=dc2626&color=fff'
       },
       {
         id: '2',
@@ -157,7 +185,8 @@ export class AdminManagement implements OnInit {
         assignedGyms: [],
         permissions: ['manage_members', 'manage_trainers', 'manage_classes', 'manage_billing', 'view_reports', 'manage_equipment'],
         createdAt: new Date('2024-01-10'),
-        lastLogin: new Date('2024-12-14')
+        lastLogin: new Date('2024-12-14'),
+        avatar: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=dc2626&color=fff'
       },
       {
         id: '3',
@@ -181,7 +210,8 @@ export class AdminManagement implements OnInit {
         assignedGyms: ['gym-1'],
         permissions: ['manage_members', 'view_reports'],
         createdAt: new Date('2024-03-05'),
-        lastLogin: new Date('2024-11-20')
+        lastLogin: new Date('2024-11-20'),
+        avatar: 'https://ui-avatars.com/api/?name=Emily+Brown&background=dc2626&color=fff'
       },
       {
         id: '5',
@@ -193,72 +223,89 @@ export class AdminManagement implements OnInit {
         assignedGyms: ['gym-2'],
         permissions: ['manage_members'],
         createdAt: new Date('2024-04-12'),
-        lastLogin: new Date('2024-10-15')
+        lastLogin: new Date('2024-10-15'),
+        avatar: 'https://ui-avatars.com/api/?name=David+Martinez&background=dc2626&color=fff'
+      },
+      {
+        id: '6',
+        name: 'Lisa Anderson',
+        email: 'lisa.a@fitpro.com',
+        phone: '+1 (555) 678-9012',
+        role: 'gym-admin',
+        status: 'active',
+        assignedGyms: ['gym-3'],
+        permissions: ['manage_members', 'manage_trainers'],
+        createdAt: new Date('2024-05-18'),
+        lastLogin: new Date('2024-12-12')
+      },
+      {
+        id: '7',
+        name: 'Robert Taylor',
+        email: 'robert.t@fitpro.com',
+        phone: '+1 (555) 789-0123',
+        role: 'gym-admin',
+        status: 'active',
+        assignedGyms: ['gym-4', 'gym-5'],
+        permissions: ['manage_members', 'manage_classes', 'view_reports'],
+        createdAt: new Date('2024-06-22'),
+        lastLogin: new Date('2024-12-13'),
+        avatar: 'https://ui-avatars.com/api/?name=Robert+Taylor&background=dc2626&color=fff'
+      },
+      {
+        id: '8',
+        name: 'Jennifer Davis',
+        email: 'jennifer.d@fitpro.com',
+        phone: '+1 (555) 890-1234',
+        role: 'gym-admin',
+        status: 'inactive',
+        assignedGyms: ['gym-1'],
+        permissions: ['manage_members'],
+        createdAt: new Date('2024-07-30'),
+        lastLogin: new Date('2024-11-05')
       }
     ];
 
     setTimeout(() => {
-      this.loading = false;
+      this.admins.set(mockAdmins);
+      this.loading.set(false);
     }, 500);
   }
 
-  applyFilters(): void {
-    let filtered = [...this.admins];
+  // Filter methods
+  onSearchChange(value: string): void {
+    this.searchFilter.set(value);
+  }
 
-    // Search filter
-    if (this.filters.search) {
-      const search = this.filters.search.toLowerCase();
-      filtered = filtered.filter(admin => 
-        admin.name.toLowerCase().includes(search) ||
-        admin.email.toLowerCase().includes(search)
-      );
-    }
+  onStatusChange(value: string): void {
+    this.statusFilter.set(value);
+  }
 
-    // Status filter
-    if (this.filters.status) {
-      filtered = filtered.filter(admin => admin.status === this.filters.status);
-    }
-
-    // Role filter
-    if (this.filters.role) {
-      filtered = filtered.filter(admin => admin.role === this.filters.role);
-    }
-
-    // Add computed field for table
-    this.filteredAdmins = filtered.map(admin => ({
-      ...admin,
-      assignedGymsCount: admin.role === 'super-admin' ? 'All' : admin.assignedGyms.length.toString()
-    }));
-
-    // Update pagination
-    this.pagination.totalItems = this.filteredAdmins.length;
-    this.pagination.totalPages = Math.ceil(this.pagination.totalItems / this.pagination.itemsPerPage);
+  onRoleChange(value: string): void {
+    this.roleFilter.set(value);
   }
 
   resetFilters(): void {
-    this.filters = {
-      search: '',
-      status: '',
-      role: ''
-    };
-    this.applyFilters();
+    this.searchFilter.set('');
+    this.statusFilter.set('');
+    this.roleFilter.set('');
   }
 
+  // Panel methods
   openAddAdminPanel(): void {
-    this.isEditMode = false;
-    this.selectedAdmin = null;
+    this.isEditMode.set(false);
+    this.selectedAdmin.set(null);
     this.adminForm.reset({
       role: 'gym-admin',
       status: 'active'
     });
     this.selectedGyms.clear();
     this.selectedPermissions.clear();
-    this.isPanelOpen = true;
+    this.isPanelOpen.set(true);
   }
 
   editAdmin(admin: Admin): void {
-    this.isEditMode = true;
-    this.selectedAdmin = admin;
+    this.isEditMode.set(true);
+    this.selectedAdmin.set(admin);
     this.adminForm.patchValue({
       name: admin.name,
       email: admin.email,
@@ -268,13 +315,12 @@ export class AdminManagement implements OnInit {
     });
     this.selectedGyms = new Set(admin.assignedGyms);
     this.selectedPermissions = new Set(admin.permissions);
-    this.isPanelOpen = true;
+    this.isPanelOpen.set(true);
   }
 
   deleteAdmin(admin: Admin): void {
     if (confirm(`Are you sure you want to delete ${admin.name}?`)) {
-      this.admins = this.admins.filter(a => a.id !== admin.id);
-      this.applyFilters();
+      this.admins.update(admins => admins.filter(a => a.id !== admin.id));
       console.log('Deleted admin:', admin);
     }
   }
@@ -304,7 +350,7 @@ export class AdminManagement implements OnInit {
   }
 
   closePanel(): void {
-    this.isPanelOpen = false;
+    this.isPanelOpen.set(false);
     this.adminForm.reset();
     this.selectedGyms.clear();
     this.selectedPermissions.clear();
@@ -313,11 +359,11 @@ export class AdminManagement implements OnInit {
   onSubmit(): void {
     if (this.adminForm.invalid) return;
 
-    this.submitting = true;
+    this.submitting.set(true);
 
     const formData = this.adminForm.value;
     const adminData: Admin = {
-      id: this.isEditMode ? this.selectedAdmin!.id : Date.now().toString(),
+      id: this.isEditMode() ? this.selectedAdmin()!.id : Date.now().toString(),
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
@@ -325,34 +371,57 @@ export class AdminManagement implements OnInit {
       status: formData.status,
       assignedGyms: Array.from(this.selectedGyms),
       permissions: Array.from(this.selectedPermissions),
-      createdAt: this.isEditMode ? this.selectedAdmin!.createdAt : new Date(),
-      lastLogin: this.isEditMode ? this.selectedAdmin!.lastLogin : undefined
+      createdAt: this.isEditMode() ? this.selectedAdmin()!.createdAt : new Date(),
+      lastLogin: this.isEditMode() ? this.selectedAdmin()!.lastLogin : undefined,
+      avatar: this.isEditMode() ? this.selectedAdmin()!.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&background=dc2626&color=fff`
     };
 
     setTimeout(() => {
-      if (this.isEditMode) {
-        const index = this.admins.findIndex(a => a.id === adminData.id);
-        if (index !== -1) {
-          this.admins[index] = adminData;
-        }
+      if (this.isEditMode()) {
+        this.admins.update(admins => {
+          const index = admins.findIndex(a => a.id === adminData.id);
+          if (index !== -1) {
+            const updated = [...admins];
+            updated[index] = adminData;
+            return updated;
+          }
+          return admins;
+        });
       } else {
-        this.admins.unshift(adminData);
+        this.admins.update(admins => [adminData, ...admins]);
       }
 
-      this.applyFilters();
-      this.submitting = false;
+      this.submitting.set(false);
       this.closePanel();
       console.log('Saved admin:', adminData);
     }, 1000);
   }
 
   onPageChange(page: number): void {
-    this.pagination.currentPage = page;
-    // Implement actual pagination logic here
+    console.log('Page changed to:', page);
+    // Page change is handled by the data-table component
   }
 
   onSort(event: { key: string; direction: 'asc' | 'desc' }): void {
-    // Implement sorting logic here
-    console.log('Sort:', event);
+    const sortedAdmins = [...this.admins()].sort((a, b) => {
+      const aValue = a[event.key as keyof Admin];
+      const bValue = b[event.key as keyof Admin];
+
+      if (aValue === undefined || bValue === undefined) return 0;
+
+      let comparison = 0;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        comparison = aValue.localeCompare(bValue);
+      } else if (aValue instanceof Date && bValue instanceof Date) {
+        comparison = aValue.getTime() - bValue.getTime();
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      }
+
+      return event.direction === 'asc' ? comparison : -comparison;
+    });
+
+    this.admins.set(sortedAdmins);
+    console.log('Sorted by:', event);
   }
 }

@@ -1,36 +1,35 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe">
   
-<!-- Mobile Header -->
-<div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800">
-  <div class="px-4 py-2 flex items-center justify-between">
-    
-    <!-- Title -->
-    <div>
-      <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-        Gym Management
-      </h3>
-      <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-        {{ filteredGyms.length }} gyms
-      </p>
-    </div>
-
-    <!-- Add Button -->
-    <button
-      (click)="openForm()"
-      class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium
-             bg-red-600 text-white rounded-lg shadow
-             hover:bg-red-700 active:scale-95 transition">
+  <!-- Mobile Header -->
+  <div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800">
+    <div class="px-4 py-2 flex items-center justify-between">
       
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-      </svg>
+      <!-- Title -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          Gym Management
+        </h3>
+        <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+          {{ filteredGyms().length }} gyms
+        </p>
+      </div>
 
-      <span>Add</span>
-    </button>
+      <!-- Add Button -->
+      <button
+        (click)="openForm()"
+        class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium
+               bg-red-600 text-white rounded-lg shadow
+               hover:bg-red-700 active:scale-95 transition">
+        
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
 
+        <span>Add</span>
+      </button>
+
+    </div>
   </div>
-</div>
-
 
   <div class="space-y-4">
     
@@ -60,16 +59,16 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
         <input type="text"
-               [(ngModel)]="searchTerm"
-               (input)="onSearch()"
+               [ngModel]="searchTerm()"
+               (ngModelChange)="searchTerm.set($event)"
                placeholder="Search gyms..."
                class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent">
       </div>
 
       <!-- Filters Row -->
       <div class="grid grid-cols-2 gap-3">
-        <select [(ngModel)]="filterStatus"
-                (change)="onStatusFilter()"
+        <select [ngModel]="filterStatus()"
+                (ngModelChange)="filterStatus.set($event)"
                 class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
           <option value="all">All Status</option>
           <option value="active">Active</option>
@@ -77,8 +76,8 @@
           <option value="suspended">Suspended</option>
         </select>
 
-        <select [(ngModel)]="filterPlan"
-                (change)="onPlanFilter()"
+        <select [ngModel]="filterPlan()"
+                (ngModelChange)="filterPlan.set($event)"
                 class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
           <option value="all">All Plans</option>
           <option value="starter">Starter</option>
@@ -88,13 +87,13 @@
       </div>
     </div>
 
-    <!-- Data Table (handles both desktop and mobile) -->
+    <!-- Data Table (handles both desktop and mobile with internal pagination) -->
     <app-data-table
       [columns]="columns"
-      [data]="filteredGyms"
+      [data]="filteredGyms()"
       [actions]="actions"
-      [pagination]="pagination"
-      [loading]="loading"
+      [paginationConfig]="paginationConfig"
+      [loading]="loading()"
       [selectable]="true"
       emptyMessage="No gyms found"
       (pageChange)="onPageChange($event)"
