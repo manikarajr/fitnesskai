@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatsCard } from '../../../../shared/components/stats-card/stats-card';
 import { DataTable, TableAction, TableColumn } from '../../../../shared/components/data-table/data-table';
+import { RouterModule } from '@angular/router';
 
 interface DashboardStats {
   totalGyms: number;
@@ -34,7 +35,7 @@ interface TopGym {
 @Component({
   selector: 'app-super-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, StatsCard, DataTable],
+  imports: [CommonModule, StatsCard, DataTable,RouterModule],
   templateUrl: './super-admin-dashboard.html',
   styleUrl: './super-admin-dashboard.scss'
 })
