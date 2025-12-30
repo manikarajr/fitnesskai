@@ -1,0 +1,272 @@
+<!-- src/app/features/admin/features/trainer/admin-trainer-management/admin-trainer-management.html -->
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe">
+  
+  <!-- Mobile Header -->
+  <div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="px-4 py-3 flex items-center justify-between">
+      
+      <!-- Title -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          My Trainers
+        </h3>
+        <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+          {{ filteredTrainers().length }} trainers · {{ gymName() }}
+        </p>
+      </div>
+
+      <!-- Add Button -->
+      <button
+        (click)="openAddTrainerPanel()"
+        class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium
+               bg-red-600 text-white rounded-lg shadow
+               hover:bg-red-700 active:scale-95 transition">
+        
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+
+        <span>Add</span>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    
+    <!-- Desktop Header -->
+    <div class="hidden lg:block bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Trainers</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Manage your gym trainers · {{ filteredTrainers().length }} total at {{ gymName() }}
+          </p>
+        </div>
+        <button (click)="openAddTrainerPanel()"
+                class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>Add Trainer</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+      
+      <!-- Search -->
+      <div class="relative mb-3">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input type="text"
+               [(ngModel)]="filters.search"
+               (input)="applyFilters()"
+               placeholder="Search trainers by name, email or specialization..."
+               class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent">
+      </div>
+
+      <!-- Filters Row -->
+      <div class="grid grid-cols-2 gap-3">
+        <select [(ngModel)]="filters.status"
+                (change)="applyFilters()"
+                class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+        <button (click)="resetFilters()"
+                class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards - Mobile Only -->
+    <div class="lg:hidden grid grid-cols-2 gap-3">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Active</p>
+     <p class="text-xl font-bold text-gray-900 dark:text-white">
+  {{ activeTrainersCount() }}
+</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Total Clients</p>
+   <p class="text-xl font-bold text-gray-900 dark:text-white">
+  {{ totalClientsCount() }}
+</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <app-data-table
+      [columns]="columns"
+      [data]="filteredTrainers()"
+      [actions]="tableActions"
+      [paginationConfig]="paginationConfig"
+      [loading]="loading()"
+      [selectable]="true"
+      emptyMessage="No trainers found. Add your first trainer to get started."
+      (pageChange)="onPageChange($event)"
+      (sortChange)="onSort($event)"
+      (rowSelect)="onRowSelect($event)">
+    </app-data-table>
+  </div>
+
+</div>
+
+<!-- Form Panel -->
+<app-offcanvas-panel
+  [isOpen]="isPanelOpen()"
+  [title]="isEditMode() ? 'Edit Trainer' : 'Add New Trainer'"
+  [subtitle]="isEditMode() ? 'Update trainer information' : 'Create a new trainer profile for your gym'"
+  [size]="'lg'"
+  (close)="closePanel()">
+  
+  <form [formGroup]="trainerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    
+    <!-- Personal Information Section -->
+    <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Personal Information</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Full Name <span class="text-red-500">*</span>
+          </label>
+          <input type="text"
+                 formControlName="name"
+                 placeholder="Enter trainer name"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 [class.border-red-500]="trainerForm.get('name')?.invalid && trainerForm.get('name')?.touched">
+          <p *ngIf="trainerForm.get('name')?.invalid && trainerForm.get('name')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Name is required
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Email <span class="text-red-500">*</span>
+          </label>
+          <input type="email"
+                 formControlName="email"
+                 placeholder="trainer@example.com"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 [class.border-red-500]="trainerForm.get('email')?.invalid && trainerForm.get('email')?.touched">
+          <p *ngIf="trainerForm.get('email')?.invalid && trainerForm.get('email')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Valid email is required
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Phone <span class="text-red-500">*</span>
+          </label>
+          <input type="tel"
+                 formControlName="phone"
+                 placeholder="+1 234 567 8900"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 [class.border-red-500]="trainerForm.get('phone')?.invalid && trainerForm.get('phone')?.touched">
+          <p *ngIf="trainerForm.get('phone')?.invalid && trainerForm.get('phone')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Phone number is required
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Information Section -->
+    <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Professional Information</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Specialization <span class="text-red-500">*</span>
+          </label>
+          <input type="text"
+                 formControlName="specialization"
+                 placeholder="e.g., Yoga, CrossFit, Pilates, Strength Training"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 [class.border-red-500]="trainerForm.get('specialization')?.invalid && trainerForm.get('specialization')?.touched">
+          <p *ngIf="trainerForm.get('specialization')?.invalid && trainerForm.get('specialization')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Specialization is required
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Certifications
+          </label>
+          <textarea formControlName="certifications"
+                    rows="3"
+                    placeholder="List certifications (e.g., ACE, NASM-CPT, RYT-200)"
+                    class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"></textarea>
+          <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+            Optional: Add relevant certifications and qualifications
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Status <span class="text-red-500">*</span>
+          </label>
+          <select formControlName="status"
+                  class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+            Inactive trainers cannot accept new clients
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col-reverse sm:flex-row gap-3 pt-6">
+      <button type="button"
+              (click)="closePanel()"
+              class="flex-1 px-5 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">
+        Cancel
+      </button>
+      <button type="submit"
+              [disabled]="trainerForm.invalid || submitting()"
+              class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+        <span *ngIf="!submitting()">{{ isEditMode() ? 'Update Trainer' : 'Add Trainer' }}</span>
+        <span *ngIf="submitting()" class="flex items-center justify-center gap-2">
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        </span>
+      </button>
+    </div>
+  </form>
+</app-offcanvas-panel>

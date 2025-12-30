@@ -1,38 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Layout, NavItem } from '../../../../shared/components/layout/layout';
 
 @Component({
   selector: 'app-trainer-dashboard',
-  imports: [CommonModule, Layout],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './trainer-dashboard.html',
   styleUrl: './trainer-dashboard.scss',
 })
 export class TrainerDashboard {
-
-navItems: NavItem[] = [
-  {
-    label: 'Dashboard',
-    route: '/trainer/dashboard',
-    icon: 'dashboard'
-  },
-  {
-    label: 'My Members',
-    route: '/trainer/members',
-    icon: 'users'
-  },
-  {
-    label: 'Schedule',
-    route: '/trainer/schedule',
-    icon: 'calendar'
-  },
-  {
-    label: 'Attendance',
-    route: '/trainer/attendance',
-    icon: 'bell'
-  }
-];
-
   todaySchedule = [
     { id: 1, time: '06:00', duration: '60 min', class: 'Morning HIIT', members: 12, room: 'Studio A', status: 'completed' },
     { id: 2, time: '09:00', duration: '45 min', class: 'Strength Training', members: 8, room: 'Gym Floor', status: 'ongoing' },

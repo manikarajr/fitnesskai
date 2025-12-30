@@ -1,0 +1,354 @@
+<!-- src/app/features/admin/features/plans/admin-membership-plans-management/admin-membership-plans-management.html -->
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe">
+  
+  <!-- Mobile Header -->
+  <div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="px-4 py-3 flex items-center justify-between">
+      
+      <!-- Title -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          Membership Plans
+        </h3>
+        <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+          {{ filteredPlans().length }} plans · {{ gymName() }}
+        </p>
+      </div>
+
+      <!-- Add Button -->
+      <button
+        (click)="openAddPlanPanel()"
+        class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium
+               bg-red-600 text-white rounded-lg shadow
+               hover:bg-red-700 active:scale-95 transition">
+        
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+
+        <span>Add</span>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    
+    <!-- Desktop Header -->
+    <div class="hidden lg:block bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Membership Plans</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Manage your membership plans · {{ filteredPlans().length }} total at {{ gymName() }}
+          </p>
+        </div>
+        <button (click)="openAddPlanPanel()"
+                class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-md flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>Add New Plan</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+      
+      <!-- Search -->
+      <div class="relative mb-3">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input type="text"
+               [(ngModel)]="filters.search"
+               (input)="applyFilters()"
+               placeholder="Search plans by name or description..."
+               class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent">
+      </div>
+
+      <!-- Filters Row -->
+      <div class="grid grid-cols-3 gap-3">
+        <select [(ngModel)]="filters.status"
+                (change)="applyFilters()"
+                class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+        <select [(ngModel)]="filters.durationType"
+                (change)="applyFilters()"
+                class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <option value="">All Durations</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="half-yearly">Half-Yearly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+
+        <button (click)="resetFilters()"
+                class="px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards - Mobile & Desktop -->
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Active Plans</p>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              {{ activePlansCount() }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Total Subscribers</p>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              {{ totalSubscribersCount() }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 col-span-2 lg:col-span-1">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              ${{ totalRevenueMonthly().toFixed(2) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <app-data-table
+      [columns]="columns"
+      [data]="filteredPlans()"
+      [actions]="tableActions"
+      [paginationConfig]="paginationConfig"
+      [loading]="loading()"
+      [selectable]="true"
+      emptyMessage="No membership plans found. Create your first plan to get started."
+      (pageChange)="onPageChange($event)"
+      (sortChange)="onSort($event)"
+      (rowSelect)="onRowSelect($event)">
+    </app-data-table>
+  </div>
+
+</div>
+
+<!-- Form Panel -->
+<app-offcanvas-panel
+  [isOpen]="isPanelOpen()"
+  [title]="isEditMode() ? 'Edit Membership Plan' : 'Add New Membership Plan'"
+  [subtitle]="isEditMode() ? 'Update membership plan details' : 'Create a new membership plan for your gym'"
+  [size]="'lg'"
+  (close)="closePanel()">
+  
+  <form [formGroup]="planForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    
+    <!-- Plan Information Section -->
+    <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Plan Information</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Plan Name <span class="text-red-500">*</span>
+          </label>
+          <input type="text"
+                 formControlName="name"
+                 placeholder="e.g., Premium Membership"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 [class.border-red-500]="planForm.get('name')?.invalid && planForm.get('name')?.touched">
+          <p *ngIf="planForm.get('name')?.invalid && planForm.get('name')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Plan name is required
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Description <span class="text-red-500">*</span>
+          </label>
+          <textarea formControlName="description"
+                    rows="3"
+                    placeholder="Brief description of the plan benefits"
+                    class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                    [class.border-red-500]="planForm.get('description')?.invalid && planForm.get('description')?.touched"></textarea>
+          <p *ngIf="planForm.get('description')?.invalid && planForm.get('description')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Description is required
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Features & Benefits <span class="text-red-500">*</span>
+          </label>
+          <textarea formControlName="features"
+                    rows="4"
+                    placeholder="List all features separated by commas (e.g., Gym access, Group classes, Personal training)"
+                    class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                    [class.border-red-500]="planForm.get('features')?.invalid && planForm.get('features')?.touched"></textarea>
+          <p *ngIf="planForm.get('features')?.invalid && planForm.get('features')?.touched" 
+             class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            Features are required
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing & Duration Section -->
+    <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Pricing & Duration</h3>
+      
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Price ($) <span class="text-red-500">*</span>
+            </label>
+            <input type="number"
+                   formControlName="price"
+                   placeholder="29.99"
+                   step="0.01"
+                   min="0"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                   [class.border-red-500]="planForm.get('price')?.invalid && planForm.get('price')?.touched">
+            <p *ngIf="planForm.get('price')?.invalid && planForm.get('price')?.touched" 
+               class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+              Valid price is required
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Duration <span class="text-red-500">*</span>
+            </label>
+            <input type="number"
+                   formControlName="duration"
+                   placeholder="1"
+                   min="1"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                   [class.border-red-500]="planForm.get('duration')?.invalid && planForm.get('duration')?.touched">
+            <p *ngIf="planForm.get('duration')?.invalid && planForm.get('duration')?.touched" 
+               class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+              Duration is required
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Duration Type <span class="text-red-500">*</span>
+          </label>
+          <select formControlName="durationType"
+                  class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="half-yearly">Half-Yearly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+          <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+            Select the billing cycle for this plan
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Max Members (Optional)
+          </label>
+          <input type="number"
+                 formControlName="maxMembers"
+                 placeholder="Leave empty for unlimited"
+                 min="1"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+            Limit the number of subscribers for exclusive plans
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plan Settings Section -->
+    <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Plan Settings</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="flex items-center space-x-3 cursor-pointer">
+            <input type="checkbox"
+                   formControlName="popularPlan"
+                   class="w-5 h-5 text-red-600 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-red-500">
+            <div>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Mark as Popular Plan</span>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Highlight this plan as the recommended option</p>
+            </div>
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Status <span class="text-red-500">*</span>
+          </label>
+          <select formControlName="status"
+                  class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+            Inactive plans won't be visible to new members
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col-reverse sm:flex-row gap-3 pt-6">
+      <button type="button"
+              (click)="closePanel()"
+              class="flex-1 px-5 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">
+        Cancel
+      </button>
+      <button type="submit"
+              [disabled]="planForm.invalid || submitting()"
+              class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+        <span *ngIf="!submitting()">{{ isEditMode() ? 'Update Plan' : 'Add Plan' }}</span>
+        <span *ngIf="submitting()" class="flex items-center justify-center gap-2">
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        </span>
+      </button>
+    </div>
+  </form>
+</app-offcanvas-panel>

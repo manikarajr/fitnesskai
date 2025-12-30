@@ -1,0 +1,257 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe">
+  
+  <!-- Mobile Header -->
+  <div class="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm">
+    <div class="px-4 py-3">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white">Settings</h3>
+      <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Manage gym configuration</p>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    
+    <!-- Desktop Header -->
+    <div class="hidden lg:block bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Configure your gym management system</p>
+      </div>
+    </div>
+
+    <!-- Settings Navigation Tabs -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <nav class="flex -mb-px overflow-x-auto scrollbar-hide">
+          <button *ngFor="let tab of settingsTabs"
+                  (click)="activeTab.set(tab.id)"
+                  [class.border-red-600]="activeTab() === tab.id"
+                  [class.text-red-600]="activeTab() === tab.id"
+                  [class.dark:text-red-400]="activeTab() === tab.id"
+                  [class.text-gray-500]="activeTab() !== tab.id"
+                  [class.dark:text-gray-400]="activeTab() !== tab.id"
+                  class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors hover:text-red-600 dark:hover:text-red-400">
+            {{ tab.label }}
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- General Settings -->
+    <div *ngIf="activeTab() === 'general'" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">General Settings</h2>
+      
+      <form [formGroup]="generalForm" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Gym Name <span class="text-red-500">*</span>
+            </label>
+            <input type="text"
+                   formControlName="gymName"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Email <span class="text-red-500">*</span>
+            </label>
+            <input type="email"
+                   formControlName="email"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Phone Number
+            </label>
+            <input type="tel"
+                   formControlName="phone"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Website
+            </label>
+            <input type="url"
+                   formControlName="website"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Address
+          </label>
+          <textarea formControlName="address"
+                    rows="3"
+                    class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none">
+          </textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button"
+                  (click)="resetGeneralForm()"
+                  class="px-6 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">
+            Reset
+          </button>
+          <button type="button"
+                  (click)="saveGeneralSettings()"
+                  [disabled]="generalForm.invalid || savingGeneral()"
+                  class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            <span *ngIf="!savingGeneral()">Save Changes</span>
+            <span *ngIf="savingGeneral()" class="flex items-center gap-2">
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Business Hours -->
+    <div *ngIf="activeTab() === 'hours'" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Business Hours</h2>
+      
+      <div class="space-y-4">
+        <div *ngFor="let day of businessHours()" 
+             class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+          <div class="flex items-center gap-3 sm:w-48">
+            <input type="checkbox"
+                   [(ngModel)]="day.isOpen"
+                   class="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+            <label class="font-medium text-gray-900 dark:text-white">{{ day.day }}</label>
+          </div>
+
+          <div class="flex-1 grid grid-cols-2 gap-3" [class.opacity-50]="!day.isOpen">
+            <input type="time"
+                   [(ngModel)]="day.openTime"
+                   [disabled]="!day.isOpen"
+                   class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent disabled:opacity-50">
+            
+            <input type="time"
+                   [(ngModel)]="day.closeTime"
+                   [disabled]="!day.isOpen"
+                   class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent disabled:opacity-50">
+          </div>
+
+          <span *ngIf="!day.isOpen" class="text-sm text-gray-500 dark:text-gray-400 sm:w-24">Closed</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button type="button"
+                (click)="saveBusinessHours()"
+                [disabled]="savingHours()"
+                class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          <span *ngIf="!savingHours()">Save Hours</span>
+          <span *ngIf="savingHours()" class="flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving...
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div *ngIf="activeTab() === 'notifications'" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Notification Preferences</h2>
+      
+      <div class="space-y-4">
+        <div *ngFor="let pref of notificationPrefs()" 
+             class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+          <div>
+            <p class="font-medium text-gray-900 dark:text-white">{{ pref.title }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ pref.description }}</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox"
+                   [(ngModel)]="pref.enabled"
+                   class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button type="button"
+                (click)="saveNotificationPrefs()"
+                [disabled]="savingNotifications()"
+                class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          <span *ngIf="!savingNotifications()">Save Preferences</span>
+          <span *ngIf="savingNotifications()" class="flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving...
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div *ngIf="activeTab() === 'security'" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Security Settings</h2>
+      
+      <form [formGroup]="securityForm" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Current Password
+          </label>
+          <input type="password"
+                 formControlName="currentPassword"
+                 class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              New Password
+            </label>
+            <input type="password"
+                   formControlName="newPassword"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Confirm New Password
+            </label>
+            <input type="password"
+                   formControlName="confirmPassword"
+                   class="w-full px-4 py-2.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button"
+                  (click)="securityForm.reset()"
+                  class="px-6 py-2.5 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">
+            Cancel
+          </button>
+          <button type="button"
+                  (click)="changePassword()"
+                  [disabled]="securityForm.invalid || savingSecurity()"
+                  class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            <span *ngIf="!savingSecurity()">Change Password</span>
+            <span *ngIf="savingSecurity()" class="flex items-center gap-2">
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Updating...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>

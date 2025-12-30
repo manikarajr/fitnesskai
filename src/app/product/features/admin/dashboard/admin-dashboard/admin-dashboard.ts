@@ -1,44 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Layout, NavItem } from '../../../../shared/components/layout/layout';
-
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, Layout],
+  imports: [CommonModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })
 export class AdminDashboard {
-navItems: NavItem[] = [
-  {
-    label: 'Dashboard',
-    route: '/admin/dashboard',
-    icon: 'dashboard'  // Changed to icon name
-  },
-  {
-    label: 'Members',
-    route: '/admin/members',
-    icon: 'users'  // Changed to icon name
-  },
-  {
-    label: 'Trainers',
-    route: '/admin/trainers',
-    icon: 'users'  // Changed to icon name
-  },
-  {
-    label: 'Plans',
-    route: '/admin/plans',
-    icon: 'dumbbell'  // Changed to icon name
-  },
-  {
-    label: 'Reports',
-    route: '/admin/reports',
-    icon: 'chart'  // Changed to icon name
-  }
-];
-
   recentActivities = [
     { id: 1, type: 'new', title: 'New Member Joined', description: 'Sarah Johnson enrolled in Premium plan', time: '5 min ago' },
     { id: 2, type: 'checkin', title: 'Attendance Check-in', description: 'Mike Davis checked in for morning session', time: '12 min ago' },
